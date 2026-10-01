@@ -7,7 +7,7 @@
 //   sitemap.xml, robots.txt
 // Every page carries the airport greeting board generator.
 // Run: node website/build.mjs   (npm run build does it after the app build)
-import { readFileSync, writeFileSync, mkdirSync, rmSync, existsSync, cpSync, readdirSync } from "node:fs";
+import { readFileSync, writeFileSync, mkdirSync, rmSync, existsSync } from "node:fs";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 import { PAGES, GROUPS } from "./src/pages.mjs";
@@ -21,37 +21,6 @@ const YEAR = new Date().getFullYear();
 
 const esc = (v = "") =>
   String(v).replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" })[c]);
-
-// Responsive photos: website/src/img/<name>-<width>.webp
-const IMG_DIR = path.join(here, "src/img");
-const IMG_WIDTHS = {};
-for (const f of readdirSync(IMG_DIR)) {
-  const m = f.match(/^(.+)-(\d+)\.webp$/);
-  if (m) (IMG_WIDTHS[m[1]] ||= []).push(+m[2]);
-}
-const SIZES = {
-  hero: "(max-width: 1000px) 100vw, 980px",
-  wide: "(max-width: 860px) 100vw, 50vw",
-  half: "(max-width: 700px) 100vw, 50vw",
-  card: "(max-width: 700px) 100vw, 560px",
-  page: "(max-width: 900px) 100vw, 45vw",
-};
-const img = (name, alt, kind = "card") => {
-  const ws = (IMG_WIDTHS[name] || []).sort((a, b) => a - b);
-  if (!ws.length) throw Error("Missing photo " + name);
-  const mid = ws.find((w) => w >= 1024) || ws.at(-1);
-  const eager = kind === "hero";
-  return `<img src="/site/img/${name}-${mid}.webp" srcset="${ws.map((w) => `/site/img/${name}-${w}.webp ${w}w`).join(", ")}" sizes="${SIZES[kind]}" width="1536" height="1024" alt="${esc(alt)}" ${eager ? 'fetchpriority="high"' : 'loading="lazy"'} decoding="async">`;
-};
-const fillImgs = (html) => html.replace(/\{\{IMG:([^|}]+)\|([^|}]+)\|([^}]+)\}\}/g, (_, n, alt, kind) => img(n, alt, kind));
-// One photo per page group.
-const GROUP_PHOTO = {
-  service: ["chauffeur", "A chauffeur opening the car door for a traveller outside the terminal at dusk"],
-  tool: ["greeter-board", "A driver at Arrivals holding up a phone with a Klein Blue greeting board"],
-  guide: ["lost", "A traveller standing still in a busy terminal, looking around for the person meeting her"],
-  pro: ["chauffeur", "A chauffeur greeting a business traveller at the airport kerb"],
-  home: ["island-family", "A family walking out of a Greek island airport, waved at by the relative picking them up"],
-};
 
 // ── Airport data ───────────────────────────────────
 // Every airport with scheduled passenger flights and an IATA code
@@ -126,26 +95,22 @@ const listJoin = (xs) => (xs.length < 2 ? xs.join("") : xs.slice(0, -1).join(", 
 // ── Shared pieces ──────────────────────────────────
 const PIN = `<svg width="0" height="0" style="position:absolute" aria-hidden="true"><defs><symbol id="pin" viewBox="0 0 18 24"><path d="M9 0C4 0 0 4 0 9c0 6.6 7.6 14.1 8.3 14.7.4.4 1 .4 1.4 0C10.4 23.1 18 15.6 18 9c0-5-4-9-9-9zm0 12.6A3.6 3.6 0 1 1 9 5.4a3.6 3.6 0 0 1 0 7.2z" fill="currentColor"/></symbol></defs></svg>`;
 
-const head = ({ title, description, url, jsonld = [], noindex = false, image = "/site/img/share.jpg" }) => `<!doctype html>
+const head = ({ title, description, url, jsonld = [], noindex = false }) => `<!doctype html>
 <html lang="en">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>${esc(title)}</title>
 <meta name="description" content="${esc(description)}">
-<link rel="canonical" href="${SITE}${url}">
-<meta name="robots" content="${noindex ? "noindex, follow" : "index, follow, max-image-preview:large"}">
+<link rel="canonical" href="${SITE}${url}">${noindex ? '\n<meta name="robots" content="noindex, follow">' : ""}
 <meta name="theme-color" content="#002fa7">
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="Arigreet">
 <meta property="og:title" content="${esc(title)}">
 <meta property="og:description" content="${esc(description)}">
 <meta property="og:url" content="${SITE}${url}">
-<meta property="og:image" content="${SITE}${image}">
-<meta property="og:image:width" content="1200">
-<meta property="og:image:height" content="630">
-<meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:image" content="${SITE}${image}">
+<meta property="og:image" content="${SITE}/icon-512.png">
+<meta name="twitter:card" content="summary">
 <link rel="icon" href="/icon.svg" type="image/svg+xml">
 <link rel="apple-touch-icon" href="/apple-touch-icon.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -297,14 +262,12 @@ writeFileSync(
   readFileSync(path.join(here, "src/base.css"), "utf8") + "\n" + readFileSync(path.join(here, "src/extra.css"), "utf8"),
 );
 writeFileSync(path.join(out, "site/site.js"), readFileSync(path.join(here, "src/site.js"), "utf8"));
-cpSync(IMG_DIR, path.join(out, "site/img"), { recursive: true });
 
 // Home
 {
   const body = readFileSync(path.join(here, "src/home.html"), "utf8")
     .replace("{{GEN}}", gen({ white: false }))
     .replace("{{FOOT}}", footMap());
-  const bodyImgs = fillImgs(body);
   write(
     "/",
     head({
@@ -312,7 +275,7 @@ cpSync(IMG_DIR, path.join(out, "site/img"), { recursive: true });
       description: "Send one link, see when they land, follow them to the exit and hold up a digital pickup sign. No download for them. Works at 7,884 airports.",
       url: "/",
       jsonld: [appLd],
-    }) + nav() + bodyImgs + tail(),
+    }) + nav() + body + tail(),
     1.0,
   );
 }
@@ -326,15 +289,12 @@ for (const p of PAGES) {
     nav() +
     `<main id="top">
   <section class="page-hero">
-    <div class="wrap page-hero-grid">
-      <div>
+    <div class="wrap">
       ${crumbs(trail.map(([l, h], i) => [l, i === trail.length - 1 ? "" : h]))}
       <span class="eyebrow">${esc(p.eyebrow)}</span>
       <h1 class="serif">${esc(p.h1)}</h1>
       <p class="lede">${esc(p.lede)}</p>
       <div class="hero-cta"><a class="btn btn-white btn-lg" href="#board">Make the greeting board</a><a class="btn btn-ghost-w btn-lg" href="/app">Create a Greet</a></div>
-      </div>
-      <figure class="page-photo">${img(...(p.photo || GROUP_PHOTO[p.group]), "hero")}</figure>
     </div>
   </section>
   ${gen({ top: p.top, white: false })}
@@ -437,7 +397,6 @@ const airportFaq = (a, city) => [
   [`Can my guest use Arigreet at ${a.iata} without the app?`, "Yes. They open your link in their phone's browser. Airport Wi-Fi is enough."],
 ];
 
-const OG = {};
 for (const a of AIRPORTS) {
   const url = `/airports/${a.slug}/`;
   const city = cityOf(a);
@@ -486,7 +445,6 @@ for (const a of AIRPORTS) {
       description: `Picking someone up at ${a.name}? ${a.terminals?.length > 1 ? `Arrival terminals (${listJoin(a.terminals)}), ` : ""}passport control, local time, where to wait and a free greeting board for ${a.iata} Arrivals.`,
       url,
       noindex: !indexable(a),
-      image: `/og/${a.slug}.png`,
       jsonld: [
         crumbLd(trail),
         faqLd(faq),
@@ -545,11 +503,8 @@ for (const a of AIRPORTS) {
   ${sendoff(`See you at ${city} Arrivals.`)}
 </main>` +
     tail();
-  OG[a.slug] = { kicker: `Arrivals guide · ${a.countryName}`, place, city, code: a.iata };
   write(url, html, a.size === "L" ? 0.8 : a.size === "M" ? 0.6 : 0.5, indexable(a) ? "airports" : null);
 }
-
-writeFileSync(path.join(out, "og-data.json"), JSON.stringify(OG));
 
 // Country pages: /airports/<country>/
 const byCountry = new Map();
