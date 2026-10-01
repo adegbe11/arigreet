@@ -70,9 +70,9 @@
 .x-screen img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; object-position: top; opacity: 0; transform: scale(1.04); transition: opacity 0.6s ease, transform 0.8s cubic-bezier(0.2, 0.8, 0.2, 1); }
 .x-screen img.on { opacity: 1; transform: none; }
 .x-story-title { font-size: clamp(48px, 7vw, 100px); line-height: 0.92; margin-bottom: 8vh; }
-.x-step { min-height: 62vh; display: grid; align-content: center; gap: 10px; opacity: 0.28; transition: opacity 0.5s ease; }
+.x-step { min-height: 62vh; display: grid; align-content: center; gap: 10px; padding-left: 26px; border-left: 3px solid rgba(255, 255, 255, 0.18); transition: border-color 0.4s ease, transform 0.5s cubic-bezier(0.2, 0.8, 0.2, 1); }
 .x-step:last-child { min-height: 50vh; }
-.x-step.on { opacity: 1; }
+.x-step.on { border-left-color: var(--lime, #ccff00); transform: translateX(6px); }
 .x-step span { font-size: 13px; font-weight: 700; letter-spacing: 0.14em; text-transform: uppercase; color: var(--lime, #ccff00); }
 .x-step h3 { font-family: var(--display); font-variation-settings: "SOFT" 100, "WONK" 1; font-weight: 900; font-size: clamp(40px, 5.4vw, 76px); line-height: 0.95; letter-spacing: -0.035em; }
 .x-step p { font-size: clamp(18px, 1.8vw, 22px); max-width: 30ch; opacity: 0.88; }
@@ -120,8 +120,8 @@
   .c1 { animation-delay: 0.35s; } .c2 { animation-delay: 0.45s; } .c3 { animation-delay: 0.55s; } .c4 { animation-delay: 0.65s; }
   .k1 { animation-delay: 1s; } .k2 { animation-delay: 1.3s; }
   @keyframes pop { from { opacity: 0; transform: translateY(60px) rotate(0deg) scale(0.85); } }
-  .x-lines span { opacity: 0.15; transform: translateY(30px); transition: opacity 0.8s ease, transform 0.9s cubic-bezier(0.2, 0.8, 0.2, 1); }
-  .x-lines span.in { opacity: 1; transform: none; }
+  .x-lines span { transform: translateY(30px); transition: transform 0.9s cubic-bezier(0.2, 0.8, 0.2, 1); }
+  .x-lines span.in { transform: none; }
 }
 .x-statement { font-size: clamp(32px, 4.6vw, 64px); line-height: 1.06; letter-spacing: -0.03em; max-width: 20ch; }
 .x-statement em { font-style: normal; color: #a9c1ff; }
@@ -168,14 +168,13 @@
 .lnk { display: block; margin-top: 6px; color: var(--ikb); font-weight: 650; text-decoration: underline; }
 .ticks { position: absolute; right: 12px; bottom: 8px; display: flex; }
 .ticks i { width: 8px; height: 13px; border: solid #9aa3b8; border-width: 0 2px 2px 0; transform: rotate(40deg); margin-left: -2px; }
-.reply { justify-self: end; background: #d9fdd3; color: #0b1230; padding: 10px 14px; border-radius: 18px 18px 6px 18px; font-size: 15px; font-weight: 500; }
+.reply { transform-origin: right bottom; justify-self: end; background: #d9fdd3; color: #0b1230; padding: 10px 14px; border-radius: 18px 18px 6px 18px; font-size: 15px; font-weight: 500; }
 /* flight */
-.fl { width: 100%; align-content: center; gap: 22px; }
+.fl { width: 100%; align-content: center; justify-items: stretch; gap: 22px; }
+.fl > * { width: 100%; }
 .fl-top { display: flex; justify-content: space-between; align-items: center; font-size: 15px; }
-.fl-st { position: relative; display: grid; }
-.fl-st em { grid-area: 1 / 1; font-style: normal; font-weight: 700; padding: 6px 12px; border-radius: 999px; font-size: 13px; text-align: right; }
-.fl-st em:first-child { background: var(--paper); color: var(--ink-2); }
-.fl-st em:last-child { background: #e8ffc2; color: #2d5200; opacity: 0; }
+.fl-st { display: block; }
+.fl-st::after { content: "In the air"; display: block; font-weight: 700; padding: 6px 12px; border-radius: 999px; font-size: 13px; background: var(--paper); color: var(--ink-2); }
 .fl-route { display: grid; grid-template-columns: auto 1fr auto; align-items: center; gap: 12px; font: 800 30px/1 var(--body); color: var(--ink); letter-spacing: -0.02em; }
 .fl-line { position: relative; height: 2px; background: repeating-linear-gradient(90deg, var(--line) 0 6px, transparent 6px 11px); }
 .fl-plane { position: absolute; top: 50%; left: 0; width: 26px; height: 26px; color: var(--ikb); transform: translate(-50%, -50%) rotate(90deg); }
@@ -187,16 +186,15 @@
 .bars { display: flex; align-items: flex-end; gap: 6px; height: 52px; }
 .bars i { width: 12px; border-radius: 4px; background: var(--ikb); }
 .bars i:nth-child(1) { height: 25%; } .bars i:nth-child(2) { height: 50%; } .bars i:nth-child(3) { height: 75%; } .bars i:nth-child(4) { height: 100%; }
-.sig-st { display: grid; }
-.sig-st em { grid-area: 1 / 1; font-style: normal; font-weight: 700; font-size: 14px; padding: 7px 14px; border-radius: 999px; text-align: center; }
-.sig-st em:first-child { background: var(--paper); color: var(--ink-2); }
-.sig-st em:last-child { background: #e8ffc2; color: #2d5200; opacity: 0; }
+.sig-st { display: block; }
+.sig-st::after { content: "Waiting for signal"; display: block; font-weight: 700; font-size: 14px; padding: 7px 14px; border-radius: 999px; background: var(--paper); color: var(--ink-2); }
 /* private */
 .priv { position: relative; width: 100%; height: 150px; }
 .dot { position: absolute; width: 18px; height: 18px; border-radius: 50%; background: var(--lime, #ccff00); box-shadow: 0 0 0 7px rgba(204, 255, 0, 0.22); top: 50%; }
 .d1 { left: 18%; } .d2 { right: 18%; background: #fff; box-shadow: 0 0 0 7px rgba(255, 255, 255, 0.18); }
 .pline { position: absolute; left: calc(18% + 18px); right: calc(18% + 18px); top: calc(50% + 8px); height: 2px; background: repeating-linear-gradient(90deg, rgba(255, 255, 255, 0.55) 0 6px, transparent 6px 11px); }
 .met { position: absolute; left: 50%; bottom: 0; transform: translateX(-50%); white-space: nowrap; font-size: 13.5px; font-weight: 700; padding: 7px 14px; border-radius: 999px; background: rgba(255, 255, 255, 0.12); opacity: 0; }
+.met::after { content: "We met · location deleted"; }
 /* flash */
 .flash { grid-template-columns: auto 1fr; gap: 22px; width: 100%; }
 .mini-phone { width: 120px; aspect-ratio: 9 / 19; border-radius: 22px; background: #fff; border: 5px solid #0d0f16; display: grid; align-content: space-between; padding: 14px 10px 10px; }
@@ -214,31 +212,27 @@
   .bubble { animation: msgIn 7s ease infinite; }
   .reply { animation: replyIn 7s ease infinite; }
   .ticks i { animation: tickBlue 7s ease infinite; }
-  @keyframes msgIn { 0% { opacity: 0; transform: translateY(16px); } 8%, 100% { opacity: 1; transform: none; } }
-  @keyframes replyIn { 0%, 40% { opacity: 0; transform: translateY(12px); } 48%, 100% { opacity: 1; transform: none; } }
+  @keyframes msgIn { 0% { transform: translateY(16px) scale(0.96); } 8%, 100% { transform: none; } }
+  @keyframes replyIn { 0%, 40% { transform: scale(0); } 48%, 100% { transform: none; } }
   @keyframes tickBlue { 0%, 28% { border-color: #9aa3b8; } 32%, 100% { border-color: #34b7f1; } }
   .fl-plane { animation: fly 6s cubic-bezier(0.5, 0, 0.3, 1) infinite; }
   @keyframes fly { 0% { left: 0; } 70%, 100% { left: 100%; } }
-  .fl-st em:first-child { animation: stOut 6s infinite; }
-  .fl-st em:last-child { animation: stIn 6s infinite; }
-  @keyframes stOut { 0%, 68% { opacity: 1; } 72%, 100% { opacity: 0; } }
-  @keyframes stIn { 0%, 68% { opacity: 0; transform: scale(0.8); } 74%, 100% { opacity: 1; transform: none; } }
+  .fl-st::after { animation: flSt 6s steps(1) infinite; }
+  @keyframes flSt { 0% { content: "In the air"; background: var(--paper); color: var(--ink-2); } 70% { content: "Landed 14:12"; background: #e8ffc2; color: #2d5200; } }
   .lang-btn span { animation: langs 14s steps(1) infinite; }
   @keyframes langs { 0% { transform: translateY(0); } 14.28% { transform: translateY(-58px); } 28.57% { transform: translateY(-116px); } 42.85% { transform: translateY(-174px); } 57.14% { transform: translateY(-232px); } 71.42% { transform: translateY(-290px); } 85.71% { transform: translateY(-348px); } 100% { transform: translateY(0); } }
   .bars i { animation: bar 6s infinite; }
   .bars i:nth-child(4) { animation-delay: 0s; } .bars i:nth-child(3) { animation-delay: 0.15s; } .bars i:nth-child(2) { animation-delay: 0.3s; } .bars i:nth-child(1) { animation-delay: 0.45s; }
   @keyframes bar { 0%, 8% { opacity: 1; } 15%, 55% { opacity: 0.15; } 62%, 100% { opacity: 1; } }
-  .sig-st em:first-child { animation: stOut2 6s infinite; }
-  .sig-st em:last-child { animation: stIn2 6s infinite; }
-  @keyframes stOut2 { 0%, 60% { opacity: 1; } 64%, 100% { opacity: 0; } }
-  @keyframes stIn2 { 0%, 60% { opacity: 0; transform: scale(0.8); } 66%, 92% { opacity: 1; transform: none; } 100% { opacity: 0; } }
+  .sig-st::after { animation: sigSt 6s steps(1) infinite; }
+  @keyframes sigSt { 0% { content: "Sent"; background: #e8ffc2; color: #2d5200; } 15% { content: "Waiting for signal"; background: var(--paper); color: var(--ink-2); } 62% { content: "Sent"; background: #e8ffc2; color: #2d5200; } }
   .d1 { animation: walk1 7s ease-in-out infinite; } .d2 { animation: walk2 7s ease-in-out infinite; }
   .pline { animation: lineGo 7s ease-in-out infinite; }
   .met { animation: metIn 7s ease infinite; }
   @keyframes walk1 { 0%, 10% { left: 18%; opacity: 1; } 55% { left: calc(50% - 22px); opacity: 1; } 70%, 92% { left: calc(50% - 22px); opacity: 0; } 100% { left: 18%; opacity: 0; } }
   @keyframes walk2 { 0%, 10% { right: 18%; opacity: 1; } 55% { right: calc(50% - 22px); opacity: 1; } 70%, 92% { right: calc(50% - 22px); opacity: 0; } 100% { right: 18%; opacity: 0; } }
   @keyframes lineGo { 0%, 10% { left: calc(18% + 18px); right: calc(18% + 18px); opacity: 1; } 55% { left: 50%; right: 50%; opacity: 0; } 100% { opacity: 0; } }
-  @keyframes metIn { 0%, 60% { opacity: 0; } 68%, 92% { opacity: 1; } 100% { opacity: 0; } }
+  @keyframes metIn { 0%, 60% { opacity: 0; } 61%, 92% { opacity: 1; } 93%, 100% { opacity: 0; } }
   .mini-btn { animation: press 4s infinite; }
   @keyframes press { 0%, 20% { transform: none; background: transparent; color: #c4302b; } 24% { transform: scale(0.92); background: #c4302b; color: #fff; } 30%, 100% { transform: none; background: transparent; color: #c4302b; } }
   .mini-board { animation: boardFlash 4s infinite; }

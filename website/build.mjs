@@ -36,6 +36,7 @@ const SIZES = {
   card: "(max-width: 700px) 100vw, 560px",
   page: "(max-width: 900px) 100vw, 45vw",
   bleed: "100vw",
+  thumb: "(max-width: 900px) 180px, 18vw",
 };
 const img = (name, alt, kind = "card") => {
   const ws = (IMG_WIDTHS[name] || []).sort((a, b) => a - b);
@@ -127,7 +128,7 @@ const listJoin = (xs) => (xs.length < 2 ? xs.join("") : xs.slice(0, -1).join(", 
 // ── Shared pieces ──────────────────────────────────
 const PIN = `<svg width="0" height="0" style="position:absolute" aria-hidden="true"><defs><symbol id="pin" viewBox="0 0 18 24"><path d="M9 0C4 0 0 4 0 9c0 6.6 7.6 14.1 8.3 14.7.4.4 1 .4 1.4 0C10.4 23.1 18 15.6 18 9c0-5-4-9-9-9zm0 12.6A3.6 3.6 0 1 1 9 5.4a3.6 3.6 0 0 1 0 7.2z" fill="currentColor"/></symbol></defs></svg>`;
 
-const head = ({ title, description, url, jsonld = [], noindex = false, image = "/site/img/share.jpg" }) => `<!doctype html>
+const head = ({ title, description, url, jsonld = [], noindex = false, image = "/site/img/share.jpg", inlineCss = "" }) => `<!doctype html>
 <html lang="en">
 <head>
 <meta charset="utf-8">
@@ -149,10 +150,9 @@ const head = ({ title, description, url, jsonld = [], noindex = false, image = "
 <meta name="twitter:image" content="${SITE}${image}">
 <link rel="icon" href="/icon.svg" type="image/svg+xml">
 <link rel="apple-touch-icon" href="/apple-touch-icon.png">
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght,SOFT,WONK@9..144,600..900,100,1&family=Geist:wght@400;500;600;700&display=swap">
-<link rel="stylesheet" href="/site/site.css">
+<link rel="preload" href="/site/fonts/fraunces-latin.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="/site/fonts/geist-latin.woff2" as="font" type="font/woff2" crossorigin>
+${inlineCss ? `<style>${inlineCss}</style>` : `<link rel="stylesheet" href="/site/site.css">`}
 ${jsonld.map((j) => `<script type="application/ld+json">${JSON.stringify(j).replace(/</g, "\\u003c")}</script>`).join("\n")}
 </head>
 <body>
@@ -280,6 +280,15 @@ const appLd = {
   url: SITE,
 };
 
+// Small, safe CSS minifier: comments, whitespace around punctuation.
+const minCss = (css) =>
+  css
+    .replace(/\/\*[\s\S]*?\*\//g, "")
+    .replace(/\s+/g, " ")
+    .replace(/\s*([{};,>])\s*/g, "$1")
+    .replace(/;}/g, "}")
+    .trim();
+
 // ── Writers ────────────────────────────────────────
 const pages = [];
 const write = (url, html, priority = 0.6, map = "pages") => {
@@ -291,12 +300,11 @@ const write = (url, html, priority = 0.6, map = "pages") => {
 
 rmSync(out, { recursive: true, force: true });
 mkdirSync(path.join(out, "site"), { recursive: true });
-writeFileSync(
-  path.join(out, "site/site.css"),
-  ["base.css", "extra.css", "home.css"].map((f) => readFileSync(path.join(here, "src", f), "utf8")).join("\n"),
-);
+const SITE_CSS = minCss(["fonts.css", "base.css", "extra.css", "home.css"].map((f) => readFileSync(path.join(here, "src", f), "utf8")).join("\n"));
+writeFileSync(path.join(out, "site/site.css"), SITE_CSS);
 writeFileSync(path.join(out, "site/site.js"), readFileSync(path.join(here, "src/site.js"), "utf8"));
 cpSync(IMG_DIR, path.join(out, "site/img"), { recursive: true });
+cpSync(path.join(here, "src/fonts"), path.join(out, "site/fonts"), { recursive: true });
 
 // Home
 {
@@ -311,6 +319,7 @@ cpSync(IMG_DIR, path.join(out, "site/img"), { recursive: true });
       description: "Send one link, see when they land, follow them to the exit and hold up a digital pickup sign. No download for them. Works at 7,884 airports.",
       url: "/",
       jsonld: [appLd],
+      inlineCss: SITE_CSS,
     }) + nav() + bodyImgs + tail(),
     1.0,
   );

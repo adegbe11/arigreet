@@ -7,7 +7,7 @@
   const navEl = document.querySelector(".nav");
   const onScroll = () => navEl?.classList.toggle("scrolled", scrollY > 40);
   addEventListener("scroll", onScroll, { passive: true });
-  onScroll();
+  requestAnimationFrame(onScroll);
 
   // Reveal sections as they scroll in. Anything already on screen stays put.
   if (!reduce && "IntersectionObserver" in window) {
@@ -16,12 +16,22 @@
       [".feat, .step, .plan, .link-card, .bx", true],
       [".photo, .plan-photo, .x-pcard", false, "rv-img"],
     ];
-    const io = new IntersectionObserver((es) => es.forEach((e) => e.isIntersecting && (e.target.classList.add("in"), io.unobserve(e.target))), { rootMargin: "0px 0px -8% 0px" });
+    // First callback runs after layout: anything already on screen stays put, the rest waits to reveal.
+    const seen = new WeakSet();
+    const io = new IntersectionObserver((es) => es.forEach((e) => {
+      const el = e.target;
+      if (!seen.has(el)) {
+        seen.add(el);
+        if (e.boundingClientRect.top < innerHeight) return io.unobserve(el);
+        el.classList.add(el.dataset.rv);
+        return;
+      }
+      if (e.isIntersecting) el.classList.add("in"), io.unobserve(el);
+    }), { rootMargin: "0px 0px -8% 0px" });
     for (const [sel, stagger, cls = "rv"] of groups)
       document.querySelectorAll(sel).forEach((el) => {
-        if (el.getBoundingClientRect().top < innerHeight) return;
         if (stagger) el.style.setProperty("--i", [...el.parentElement.children].indexOf(el) % 6);
-        el.classList.add(cls);
+        el.dataset.rv = cls;
         io.observe(el);
       });
     document.querySelectorAll(".steps .tap").forEach((el, i) => el.style.setProperty("--i", i));
@@ -97,8 +107,9 @@
         im.style.transform = `translateY(${(k * -60).toFixed(1)}px) scale(1.05)`;
       });
     if (bgs.length) {
-      addEventListener("scroll", drift, { passive: true });
-      drift();
+      let ticking = false;
+      addEventListener("scroll", () => ticking || (ticking = true, requestAnimationFrame(() => (drift(), ticking = false))), { passive: true });
+      setTimeout(() => requestAnimationFrame(drift), 0);
     }
     if ("IntersectionObserver" in window) {
       const lio = new IntersectionObserver((es) => es.forEach((e) => {
@@ -119,7 +130,13 @@
       shots.forEach((im) => im.classList.toggle("on", im.dataset.shot === n));
     }), { rootMargin: "-45% 0px -45% 0px" });
     steps.forEach((s) => sio.observe(s));
-    shots.forEach((im) => (im.loading = "eager"));
+    const story = document.querySelector(".x-story");
+    const pre = new IntersectionObserver((es) => {
+      if (!es.some((e) => e.isIntersecting)) return;
+      shots.forEach((im) => (im.loading = "eager"));
+      pre.disconnect();
+    }, { rootMargin: "50% 0px" });
+    if (story) pre.observe(story);
   }
 
   const track = document.getElementById("track");
@@ -127,7 +144,7 @@
     const codes = [["ATH","Athens"],["LHR","London"],["LOS","Lagos"],["JFK","New York"],["DXB","Dubai"],["CDG","Paris"],["FCO","Rome"],["MAD","Madrid"],["FRA","Frankfurt"],["LIS","Lisbon"],["IST","Istanbul"],["SKG","Thessaloniki"],["ABV","Abuja"],["SIN","Singapore"],["NBO","Nairobi"],["AMS","Amsterdam"],["JTR","Santorini"],["HND","Tokyo"],["YYZ","Toronto"],["ACC","Accra"]];
     const item = ([c, n], dup) =>
       `<a class="code" href="/airports/${c.toLowerCase()}/"${dup ? ' tabindex="-1" aria-hidden="true"' : ""}><b>${c}</b><span>${n}</span></a>`;
-    track.innerHTML = codes.map((c) => item(c, false)).join("") + codes.map((c) => item(c, true)).join("");
+    setTimeout(() => track.innerHTML = codes.map((c) => item(c, false)).join("") + codes.map((c) => item(c, true)).join(""), 0);
   }
 
   // Count the stats up once; the final numbers are already in the page.
@@ -202,10 +219,11 @@
     createBtn.href = "/app?" + q.toString();
   };
   gen.querySelector("form")?.addEventListener("submit", (e) => e.preventDefault());
-  gen.addEventListener("input", render);
-  addEventListener("resize", render);
-  document.fonts?.ready.then(render);
-  render();
+  const soon = () => requestAnimationFrame(render);
+  gen.addEventListener("input", soon);
+  addEventListener("resize", soon);
+  document.fonts?.ready.then(soon);
+  soon();
 
   // Full screen, ready to hold up at Arrivals.
   $("[data-full]").addEventListener("click", async () => {
