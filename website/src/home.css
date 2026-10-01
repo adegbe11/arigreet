@@ -59,11 +59,14 @@
 .x-story-grid { display: grid; grid-template-columns: minmax(0, 0.9fr) minmax(0, 1.1fr); gap: clamp(30px, 6vw, 90px); }
 .x-phone-col { position: relative; }
 .x-phone {
-  position: sticky; top: calc(50vh - min(330px, 38vh)); margin-inline: auto;
-  width: min(330px, 76vw); aspect-ratio: 390 / 844; max-height: 76vh; padding: 11px; border-radius: 52px;
-  background: #0d0f16; box-shadow: 0 40px 90px rgba(0, 0, 0, 0.45), inset 0 0 0 2px #2a2e3c;
+  /* iPhone 18 Pro Max: 163.4 × 78 mm body, 6.9" 1320 × 2868 screen */
+  --w: min(360px, 78vw, calc(78vh * 78 / 163.4));
+  position: sticky; top: calc(50vh - var(--w) * 163.4 / 78 / 2); margin-inline: auto;
+  width: var(--w); aspect-ratio: 78 / 163.4; padding: calc(var(--w) * 0.026); border-radius: calc(var(--w) * 0.155);
+  background: linear-gradient(145deg, #3a3d46, #121318 40%, #2b2e36); 
+  box-shadow: 0 40px 90px rgba(0, 0, 0, 0.45), inset 0 0 0 1.5px #5a5e69, inset 0 0 0 4px #0b0c10;
 }
-.x-screen { position: relative; width: 100%; height: 100%; border-radius: 42px; overflow: hidden; background: #fff; }
+.x-screen { position: relative; width: 100%; height: 100%; border-radius: calc(var(--w) * 0.13); overflow: hidden; background: #fff; }
 .x-screen img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; object-position: top; opacity: 0; transform: scale(1.04); transition: opacity 0.6s ease, transform 0.8s cubic-bezier(0.2, 0.8, 0.2, 1); }
 .x-screen img.on { opacity: 1; transform: none; }
 .x-story-title { font-size: clamp(48px, 7vw, 100px); line-height: 0.92; margin-bottom: 8vh; }
@@ -76,7 +79,7 @@
 @media (max-width: 860px) {
   .x-story-grid { grid-template-columns: 1fr; }
   .x-phone-col { position: sticky; top: 70px; z-index: 0; height: 0; }
-  .x-phone { position: relative; top: 0; width: 46vw; max-width: 200px; margin-left: auto; margin-right: 0; opacity: 0.95; }
+  .x-phone { --w: min(46vw, 200px); position: relative; top: 0; margin-left: auto; margin-right: 0; }
   .x-steps { position: relative; z-index: 1; }
   .x-step, .x-story-title { padding-right: 44vw; }
   .x-step { min-height: 70vh; }
