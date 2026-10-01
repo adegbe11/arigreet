@@ -239,3 +239,12 @@
   .mini-board { animation: boardFlash 4s infinite; }
   @keyframes boardFlash { 0%, 28% { background: #fff; box-shadow: none; } 32% { background: #ccff00; box-shadow: 0 0 0 8px rgba(204, 255, 0, 0.4), 0 0 60px rgba(204, 255, 0, 0.6); } 38% { background: #fff; } 44% { background: #ccff00; box-shadow: 0 0 0 8px rgba(204, 255, 0, 0.4), 0 0 60px rgba(204, 255, 0, 0.6); } 50%, 100% { background: #fff; box-shadow: none; } }
 }
+
+/* Rounded frame: every coloured block sits on white as a rounded card */
+:root { --frame: clamp(8px, 1vw, 14px); --round: clamp(22px, 2.4vw, 36px); }
+.x-hero, .page-hero, .gen-sec, .x-bleed, .x-story, .faq, .sendoff, .links-sec {
+  margin-inline: var(--frame); margin-bottom: var(--frame);
+  border-radius: var(--round); overflow: clip;
+}
+.x-hero, .page-hero { margin-top: calc(-92px + var(--frame)); }
+.sendoff { margin-bottom: var(--frame); }
