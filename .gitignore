@@ -10,3 +10,5 @@ Claude outputs/
 *.keystore
 android/app/google-services.json
 .env.production.local
+
+push.bat
