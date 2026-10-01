@@ -120,3 +120,5 @@
   .x-lines span { opacity: 0.15; transform: translateY(30px); transition: opacity 0.8s ease, transform 0.9s cubic-bezier(0.2, 0.8, 0.2, 1); }
   .x-lines span.in { opacity: 1; transform: none; }
 }
+.x-statement { font-size: clamp(32px, 4.6vw, 64px); line-height: 1.06; letter-spacing: -0.03em; max-width: 20ch; }
+.x-statement em { font-style: normal; color: #a9c1ff; }
