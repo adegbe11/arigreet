@@ -85,19 +85,24 @@ const utcOffset = (tz) => {
     return "";
   }
 };
+// Indexing in waves (the OwnBio launch gate): Google sees the strongest pages first.
+// Wave 1: every major airport and every airport with checked terminal data.
+// Set INDEX_ALL_AIRPORTS=1 to open the rest once Search Console shows them doing well.
+const INDEX_ALL = process.env.INDEX_ALL_AIRPORTS === "1";
+const indexable = (a) => INDEX_ALL || a.size === "L" || !!a.terminals;
 const listJoin = (xs) => (xs.length < 2 ? xs.join("") : xs.slice(0, -1).join(", ") + " and " + xs.at(-1));
 
 // ── Shared pieces ──────────────────────────────────
 const PIN = `<svg width="0" height="0" style="position:absolute" aria-hidden="true"><defs><symbol id="pin" viewBox="0 0 18 24"><path d="M9 0C4 0 0 4 0 9c0 6.6 7.6 14.1 8.3 14.7.4.4 1 .4 1.4 0C10.4 23.1 18 15.6 18 9c0-5-4-9-9-9zm0 12.6A3.6 3.6 0 1 1 9 5.4a3.6 3.6 0 0 1 0 7.2z" fill="currentColor"/></symbol></defs></svg>`;
 
-const head = ({ title, description, url, jsonld = [] }) => `<!doctype html>
+const head = ({ title, description, url, jsonld = [], noindex = false }) => `<!doctype html>
 <html lang="en">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>${esc(title)}</title>
 <meta name="description" content="${esc(description)}">
-<link rel="canonical" href="${SITE}${url}">
+<link rel="canonical" href="${SITE}${url}">${noindex ? '\n<meta name="robots" content="noindex, follow">' : ""}
 <meta name="theme-color" content="#002fa7">
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="Arigreet">
@@ -439,6 +444,7 @@ for (const a of AIRPORTS) {
       title: `Meet Someone at ${place} Airport (${a.iata}) · Arrivals Guide and Greeting Board`,
       description: `Picking someone up at ${a.name}? ${a.terminals?.length > 1 ? `Arrival terminals (${listJoin(a.terminals)}), ` : ""}passport control, local time, where to wait and a free greeting board for ${a.iata} Arrivals.`,
       url,
+      noindex: !indexable(a),
       jsonld: [
         crumbLd(trail),
         faqLd(faq),
@@ -497,7 +503,7 @@ for (const a of AIRPORTS) {
   ${sendoff(`See you at ${city} Arrivals.`)}
 </main>` +
     tail();
-  write(url, html, a.size === "L" ? 0.8 : a.size === "M" ? 0.6 : 0.5, "airports");
+  write(url, html, a.size === "L" ? 0.8 : a.size === "M" ? 0.6 : 0.5, indexable(a) ? "airports" : null);
 }
 
 // Country pages: /airports/<country>/
@@ -576,7 +582,7 @@ for (const [code, as] of byCountry) {
 
 // Sitemaps: one per section, plus an index
 const today = new Date().toISOString().slice(0, 10);
-const maps = [...new Set(pages.map((p) => p.map))];
+const maps = [...new Set(pages.map((p) => p.map).filter(Boolean))];
 for (const m of maps)
   writeFileSync(
     path.join(out, `sitemap-${m}.xml`),
@@ -592,5 +598,5 @@ writeFileSync(
     .join("\n")}\n</sitemapindex>\n`,
 );
 writeFileSync(path.join(out, "robots.txt"), `User-agent: *\nAllow: /\nDisallow: /app\nDisallow: /g/\nDisallow: /api/\nSitemap: ${SITE}/sitemap.xml\n`);
-console.log(`arigreet.com: ${pages.length} pages written to website/dist`);
+console.log(`arigreet.com: ${pages.length} pages written to website/dist, ${pages.filter((p) => p.map).length} in the sitemap`);
 if (!existsSync(path.join(out, "index.html"))) process.exit(1);
