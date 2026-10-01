@@ -1,0 +1,10 @@
+android
+artifacts
+assets
+ci
+docs
+preview
+test
+Claude outputs
+*.sqlite*
+push.bat
