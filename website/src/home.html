@@ -74,37 +74,46 @@
   <section class="features" aria-labelledby="feat-title">
     <div class="wrap">
       <h2 id="feat-title" class="serif x-sec-title">Small taps. No chaos.</h2>
-      <div class="feat-grid">
-        <div class="feat">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.5.5l3-3a5 5 0 0 0-7-7l-1.7 1.7"/><path d="M14 11a5 5 0 0 0-7.5-.5l-3 3a5 5 0 0 0 7 7l1.7-1.7"/></svg>
-          <h3>One link</h3>
-          <p>Opens in any browser. No app, no account for them.</p>
-        </div>
-        <div class="feat">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 16l20-6-4-3-6 2-6-5-2 1 4 6-5 1-2-2-1 1z"/><path d="M3 21h18"/></svg>
-          <h3>Live flight</h3>
-          <p>Delays and the new landing time, as they happen.</p>
-        </div>
-        <div class="feat">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M2 12h20M12 2a15 15 0 0 1 0 20M12 2a15 15 0 0 0 0 20"/></svg>
-          <h3>Their language</h3>
-          <p>English, Greek, French, Spanish, Italian, German, Portuguese.</p>
-        </div>
-        <div class="feat">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 1l22 22"/><path d="M16.7 11.1A11 11 0 0 1 19 12.6M5 12.6a11 11 0 0 1 5.2-2.5M10.7 5A16 16 0 0 1 22.6 9M1.4 9a16 16 0 0 1 4.4-2.8M8.5 16.1a6 6 0 0 1 7 0"/><circle cx="12" cy="20" r="1"/></svg>
-          <h3>No signal? Fine.</h3>
-          <p>Taps wait and send the second they connect.</p>
-        </div>
-        <div class="feat">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="11" width="16" height="10" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></svg>
-          <h3>Private</h3>
-          <p>Location only while you're meeting. Deleted after.</p>
-        </div>
-        <div class="feat">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.7 21a2 2 0 0 1-3.4 0"/></svg>
-          <h3>"I can't find you"</h3>
-          <p>One button. Your board lights up.</p>
-        </div>
+      <div class="bento">
+        <article class="bx bx-link blue">
+          <div class="bx-demo chat" aria-hidden="true">
+            <div class="bubble">Hi Helen, it's Ama. Open this when you land.<span class="lnk">arigreet.com/g/7f3k9</span><span class="ticks"><i></i><i></i></span></div>
+            <div class="reply">Got it, see you soon!</div>
+          </div>
+          <h3>One link.</h3><p>Opens in any browser. Nothing to install.</p>
+        </article>
+        <article class="bx bx-flight">
+          <div class="bx-demo fl" aria-hidden="true">
+            <div class="fl-top"><b>A3 601</b><span class="fl-st"><em>In the air</em><em>Landed 14:12</em></span></div>
+            <div class="fl-route"><b>LHR</b><span class="fl-line"><svg class="fl-plane" viewBox="0 0 24 24"><path d="M21 16v-2l-8-5V3.5a1.5 1.5 0 0 0-3 0V9l-8 5v2l8-2.5V19l-2 1.5V22l3.5-1 3.5 1v-1.5L13 19v-5.5z" fill="currentColor"/></svg></span><b>ATH</b></div>
+          </div>
+          <h3>Live flight.</h3><p>Delays and landing, as they happen.</p>
+        </article>
+        <article class="bx bx-lang paper">
+          <div class="bx-demo lang" aria-hidden="true"><div class="lang-btn"><span>I'VE LANDED</span><span>ΠΡΟΣΓΕΙΩΘΗΚΑ</span><span>J'AI ATTERRI</span><span>HE ATERRIZADO</span><span>SONO ATTERRATO</span><span>ICH BIN GELANDET</span><span>JÁ ATERREI</span><span>I'VE LANDED</span></div></div>
+          <h3>Their language.</h3><p>Seven languages, picked from their phone.</p>
+        </article>
+        <article class="bx bx-signal">
+          <div class="bx-demo sig" aria-hidden="true">
+            <div class="bars"><i></i><i></i><i></i><i></i></div>
+            <div class="sig-st"><em>Waiting for signal</em><em>Sent</em></div>
+          </div>
+          <h3>No signal? Fine.</h3><p>Taps wait, then send the second they connect.</p>
+        </article>
+        <article class="bx bx-private ink">
+          <div class="bx-demo priv" aria-hidden="true">
+            <span class="dot d1"></span><span class="dot d2"></span><span class="pline"></span>
+            <span class="met">We met · location deleted</span>
+          </div>
+          <h3>Private.</h3><p>Shared only while you meet. Gone after.</p>
+        </article>
+        <article class="bx bx-flash blue">
+          <div class="bx-copy"><h3>"I can't find you."</h3><p>One tap from them. Your board lights up.</p></div>
+          <div class="bx-demo flash" aria-hidden="true">
+            <div class="mini-phone"><div class="mini-ui"><i></i><i></i><i></i></div><div class="mini-btn">I can't find Ama</div></div>
+            <div class="mini-board"><small>Welcome to Athens</small><b>Helen Smith</b></div>
+          </div>
+        </article>
       </div>
       <div class="stats">
         <div class="stat"><b data-to="7884">7,884</b><span>Airports</span></div>

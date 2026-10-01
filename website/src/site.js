@@ -13,7 +13,7 @@
   if (!reduce && "IntersectionObserver" in window) {
     const groups = [
       [".gen-head, .gen, .statement p, .eyebrow + .feat-grid, .story h2, .story-lede, .stats, .who h2, .who-lede, .faq h2, .faq-lede, .qa, .sendoff h2, .sendoff p, .prose-block, .links-sec h2, .page-photo", false],
-      [".feat, .step, .plan, .link-card, .code-none", true],
+      [".feat, .step, .plan, .link-card, .bx", true],
       [".photo, .plan-photo, .x-pcard", false, "rv-img"],
     ];
     const io = new IntersectionObserver((es) => es.forEach((e) => e.isIntersecting && (e.target.classList.add("in"), io.unobserve(e.target))), { rootMargin: "0px 0px -8% 0px" });
