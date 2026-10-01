@@ -3,12 +3,79 @@
   const reduce = matchMedia("(prefers-reduced-motion: reduce)").matches;
 
   // Airport codes for the moving strip (doubled so the loop is seamless).
+  // Sticky nav tightens once you scroll.
+  const navEl = document.querySelector(".nav");
+  const onScroll = () => navEl?.classList.toggle("scrolled", scrollY > 40);
+  addEventListener("scroll", onScroll, { passive: true });
+  onScroll();
+
+  // Reveal sections as they scroll in. Anything already on screen stays put.
+  if (!reduce && "IntersectionObserver" in window) {
+    const groups = [
+      [".gen-head, .gen, .statement p, .eyebrow + .feat-grid, .story h2, .story-lede, .stats, .who h2, .who-lede, .faq h2, .faq-lede, .qa, .sendoff h2, .sendoff p, .prose-block, .links-sec h2, .page-photo", false],
+      [".feat, .step, .plan, .link-card, .code-none", true],
+      [".photo, .plan-photo", false, "rv-img"],
+    ];
+    const io = new IntersectionObserver((es) => es.forEach((e) => e.isIntersecting && (e.target.classList.add("in"), io.unobserve(e.target))), { rootMargin: "0px 0px -8% 0px" });
+    for (const [sel, stagger, cls = "rv"] of groups)
+      document.querySelectorAll(sel).forEach((el) => {
+        if (el.getBoundingClientRect().top < innerHeight) return;
+        if (stagger) el.style.setProperty("--i", [...el.parentElement.children].indexOf(el) % 6);
+        el.classList.add(cls);
+        io.observe(el);
+      });
+    document.querySelectorAll(".steps .tap").forEach((el, i) => el.style.setProperty("--i", i));
+
+    // The statement lights up word by word as you read down the page.
+    const st = document.querySelector(".statement p");
+    if (st) {
+      const wrap = (node) => {
+        for (const n of [...node.childNodes]) {
+          if (n.nodeType === 3) {
+            const frag = document.createDocumentFragment();
+            n.textContent.split(/(\s+)/).forEach((t) => {
+              if (!t.trim()) return frag.append(t);
+              const s = document.createElement("span");
+              s.className = "w";
+              s.textContent = t;
+              frag.append(s);
+            });
+            n.replaceWith(frag);
+          } else wrap(n);
+        }
+      };
+      wrap(st);
+      const words = [...st.querySelectorAll(".w")];
+      const paint = () => {
+        const r = st.getBoundingClientRect();
+        const k = Math.min(1, Math.max(0, (innerHeight * 0.85 - r.top) / (r.height + innerHeight * 0.35)));
+        const n = Math.round(k * words.length);
+        words.forEach((w, i) => w.classList.toggle("on", i < n));
+      };
+      addEventListener("scroll", paint, { passive: true });
+      paint();
+    }
+
+    // Gentle depth on the story photos.
+    const ph = [...document.querySelectorAll(".story-photos .photo img")];
+    if (ph.length) {
+      const par = () =>
+        ph.forEach((im) => {
+          const r = im.parentElement.getBoundingClientRect();
+          const k = (r.top + r.height / 2 - innerHeight / 2) / innerHeight;
+          im.style.transform = `scale(1.1) translateY(${(k * -24).toFixed(1)}px)`;
+        });
+      addEventListener("scroll", par, { passive: true });
+      par();
+    }
+  }
+
   const track = document.getElementById("track");
   if (track) {
     const codes = [["ATH","Athens"],["LHR","London"],["LOS","Lagos"],["JFK","New York"],["DXB","Dubai"],["CDG","Paris"],["FCO","Rome"],["MAD","Madrid"],["FRA","Frankfurt"],["LIS","Lisbon"],["IST","Istanbul"],["SKG","Thessaloniki"],["ABV","Abuja"],["SIN","Singapore"],["NBO","Nairobi"],["AMS","Amsterdam"],["JTR","Santorini"],["HND","Tokyo"],["YYZ","Toronto"],["ACC","Accra"]];
-    track.innerHTML = [...codes, ...codes]
-      .map(([c, n]) => `<a class="code" href="/airports/${c.toLowerCase()}/"><b>${c}</b><span>${n}</span></a>`)
-      .join("");
+    const item = ([c, n], dup) =>
+      `<a class="code" href="/airports/${c.toLowerCase()}/"${dup ? ' tabindex="-1" aria-hidden="true"' : ""}><b>${c}</b><span>${n}</span></a>`;
+    track.innerHTML = codes.map((c) => item(c, false)).join("") + codes.map((c) => item(c, true)).join("");
   }
 
   // Count the stats up once; the final numbers are already in the page.
