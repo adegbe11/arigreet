@@ -35,6 +35,7 @@ const SIZES = {
   half: "(max-width: 700px) 100vw, 50vw",
   card: "(max-width: 700px) 100vw, 560px",
   page: "(max-width: 900px) 100vw, 45vw",
+  bleed: "100vw",
 };
 const img = (name, alt, kind = "card") => {
   const ws = (IMG_WIDTHS[name] || []).sort((a, b) => a - b);
@@ -172,13 +173,13 @@ const nav = () => `<header class="nav">
 
 const footMap = () => {
   const cols = Object.entries(GROUPS).map(
-    ([g, label]) => `<div><h4>${esc(label)}</h4><ul>${PAGES.filter((p) => p.group === g)
+    ([g, label]) => `<div><h3 class="fm-h">${esc(label)}</h3><ul>${PAGES.filter((p) => p.group === g)
       .map((p) => `<li><a href="/${p.slug}/">${esc(p.nav)}</a></li>`)
       .join("")}</ul></div>`,
   );
   const top = POPULAR.map((c) => BY_IATA.get(c)).filter(Boolean).slice(0, 10);
   cols.push(
-    `<div><h4>Airports</h4><ul>${top.map((a) => `<li><a href="/airports/${a.slug}/">${esc(placeOf(a))} (${a.iata})</a></li>`).join("")}<li><a href="/airports/">All airport guides</a></li></ul></div>`,
+    `<div><h3 class="fm-h">Airports</h3><ul>${top.map((a) => `<li><a href="/airports/${a.slug}/">${esc(placeOf(a))} (${a.iata})</a></li>`).join("")}<li><a href="/airports/">All airport guides</a></li></ul></div>`,
   );
   return `<div class="foot-map">${cols.join("")}</div>
       <footer class="foot">
@@ -205,7 +206,6 @@ const tail = () => `<script src="/site/site.js" defer></script>
 const gen = ({ title = "Airport greeting board generator", text = "Type their name, pick a colour, and hold it up at Arrivals. Or turn it into a live Greet so they can find you and make it flash.", top = "Welcome", name = "Helen Smith", airport = "", headingTag = "h2", white = false } = {}) => `<section class="gen-sec${white ? " on-white" : ""}" id="board" aria-labelledby="gen-title">
     <div class="wrap">
       <div class="gen-head">
-        <span class="eyebrow">Free · no account</span>
         <${headingTag} id="gen-title" class="serif">${esc(title)}</${headingTag}>
         <p>${esc(text)}</p>
       </div>
@@ -258,7 +258,7 @@ const faqLd = (faq) => ({
   mainEntity: faq.map(([q, a]) => ({ "@type": "Question", name: q, acceptedAnswer: { "@type": "Answer", text: a } })),
 });
 const faqHtml = (faq) =>
-  faq.map(([q, a], i) => `<details class="qa"${i === 0 ? " open" : ""}><summary>${esc(q)}<i></i></summary><p>${esc(a)}</p></details>`).join("\n");
+  faq.map(([q, a], i) => `<details class="qa"><summary>${esc(q)}<i></i></summary><p>${esc(a)}</p></details>`).join("\n");
 const blockHtml = (b) =>
   `<div class="prose-block" id="${esc(b.h.toLowerCase().replace(/[^a-z0-9]+/g, "-"))}"><h2>${esc(b.h)}</h2><div class="prose-body">${(b.p || [])
     .map((t) => `<p>${esc(t)}</p>`)
@@ -293,7 +293,7 @@ rmSync(out, { recursive: true, force: true });
 mkdirSync(path.join(out, "site"), { recursive: true });
 writeFileSync(
   path.join(out, "site/site.css"),
-  readFileSync(path.join(here, "src/base.css"), "utf8") + "\n" + readFileSync(path.join(here, "src/extra.css"), "utf8"),
+  ["base.css", "extra.css", "home.css"].map((f) => readFileSync(path.join(here, "src", f), "utf8")).join("\n"),
 );
 writeFileSync(path.join(out, "site/site.js"), readFileSync(path.join(here, "src/site.js"), "utf8"));
 cpSync(IMG_DIR, path.join(out, "site/img"), { recursive: true });
@@ -345,9 +345,9 @@ for (const p of PAGES) {
       <div>${p.blocks.map(blockHtml).join("\n")}</div>
     </div>
   </section>
-  <section class="faq" id="faq" style="padding-top:0">
+  <section class="faq" id="faq">
     <div class="wrap faq-grid">
-      <div><h2 class="serif">Questions.</h2></div>
+      <div><h2 class="serif">Frequently asked questions</h2><p class="faq-lede">Everything you need to know before getting started.</p></div>
       <div>${faqHtml(p.faq)}</div>
     </div>
   </section>
@@ -527,9 +527,9 @@ for (const a of AIRPORTS) {
       <div>${blocks.map(blockHtml).join("\n")}</div>
     </div>
   </section>
-  <section class="faq" id="faq" style="padding-top:0">
+  <section class="faq" id="faq">
     <div class="wrap faq-grid">
-      <div><h2 class="serif">Questions about ${a.iata}.</h2></div>
+      <div><h2 class="serif">Frequently asked questions</h2><p class="faq-lede">Everything you need to know before getting started.</p></div>
       <div>${faqHtml(faq)}</div>
     </div>
   </section>

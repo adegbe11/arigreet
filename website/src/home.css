@@ -125,3 +125,20 @@
 }
 .x-statement { font-size: clamp(32px, 4.6vw, 64px); line-height: 1.06; letter-spacing: -0.03em; max-width: 20ch; }
 .x-statement em { font-style: normal; color: #a9c1ff; }
+
+/* ── FAQ: one colour, big title, rounded answer cards ── */
+.faq { background: var(--ikb); color: var(--white); padding-block: clamp(80px, 10vw, 130px); }
+.faq .faq-grid { grid-template-columns: 1fr; gap: clamp(28px, 4vw, 48px); max-width: 1100px; }
+.faq .faq-grid > div:first-child { text-align: center; }
+.faq h2 { font-size: clamp(44px, 7vw, 96px); line-height: 0.95; letter-spacing: -0.04em; color: #d6e1ff; }
+.faq .faq-lede { margin-top: 14px; color: rgba(255, 255, 255, 0.78); font-size: clamp(17px, 1.6vw, 20px); }
+.faq .faq-grid > div:last-child { display: grid; gap: 14px; }
+.faq .qa { border: 0; border-radius: 34px; background: var(--ikb-deep); transition: background 0.25s ease; }
+.faq .qa:hover { background: #001f6e; }
+.faq .qa summary { padding: clamp(22px, 2.6vw, 34px) clamp(24px, 3.4vw, 54px); font-size: clamp(17px, 1.6vw, 22px); font-weight: 600; color: #e3eaff; letter-spacing: -0.01em; }
+.faq .qa summary i { width: 22px; height: 22px; background: none; border-radius: 0; }
+.faq .qa summary i::before { width: 11px; height: 11px; margin: 0; left: 50%; top: 40%; background: none; border: solid #e3eaff; border-width: 0 2.5px 2.5px 0; border-radius: 1px; transform: translate(-50%, -50%) rotate(45deg); transition: transform 0.25s ease, top 0.25s ease; }
+.faq .qa summary i::after { display: none; }
+.faq .qa[open] summary i { background: none; }
+.faq .qa[open] summary i::before { top: 60%; transform: translate(-50%, -50%) rotate(225deg); background: none; }
+.faq .qa p { padding: 0 clamp(24px, 3.4vw, 54px) clamp(22px, 2.6vw, 34px); color: rgba(255, 255, 255, 0.82); font-size: 17px; max-width: 70ch; }
