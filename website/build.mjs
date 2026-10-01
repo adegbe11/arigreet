@@ -37,6 +37,7 @@ const SIZES = {
   page: "(max-width: 900px) 100vw, 45vw",
   bleed: "100vw",
   thumb: "(max-width: 900px) 180px, 18vw",
+  ribbon: "(max-width: 700px) 300px, 450px",
 };
 const img = (name, alt, kind = "card") => {
   const ws = (IMG_WIDTHS[name] || []).sort((a, b) => a - b);
@@ -44,6 +45,30 @@ const img = (name, alt, kind = "card") => {
   const mid = ws.find((w) => w >= 1024) || ws.at(-1);
   const eager = kind === "hero";
   return `<img src="/site/img/${name}-${mid}.webp" srcset="${ws.map((w) => `/site/img/${name}-${w}.webp ${w}w`).join(", ")}" sizes="${SIZES[kind]}" width="1536" height="1024" alt="${esc(alt)}" ${eager ? 'fetchpriority="high"' : 'loading="lazy"'} decoding="async">`;
+};
+// Hero photo ribbon: a row of real moments that drifts past, Linktree-style.
+const RIBBON = [
+  ["reunion", "A mother walking out of Arrivals with open arms", "w"],
+  ["greeter-board", "A driver holding up a phone greeting board at Arrivals", "t"],
+  ["look-up", "Friends hugging at Arrivals", "w"],
+  ["chauffeur", "A chauffeur opening the car door for a traveller", "t"],
+  ["island-family", "A family arriving at a Greek island airport", "w"],
+  ["lost", "A traveller looking for the person meeting her", "t"],
+  ["landed", "A passenger tapping I've landed on her phone", "w"],
+  ["barrier", "Drivers waiting at the arrivals barrier", "t"],
+  ["flatlay", "Passport, boarding pass and a phone showing a Greet", "w"],
+];
+const ribbon = () => {
+  const card = ([n, alt, shape], dup, i) => {
+    const ws = (IMG_WIDTHS[n] || []).filter((w) => w >= 480 && w <= 1024).sort((a, b) => a - b);
+    return `<figure class="rb-card rb-${shape}"><img src="/site/img/${n}-480.webp" srcset="${ws.map((w) => `/site/img/${n}-${w}.webp ${w}w`).join(", ")}" sizes="${SIZES.ribbon}" width="480" height="320" alt="${dup ? "" : esc(alt)}" ${dup || i > 2 ? 'loading="lazy" ' : ""}fetchpriority="low" decoding="async"></figure>`;
+  };
+  return `<div class="x-ribbon">
+      <div class="rb-track">${RIBBON.map((r, i) => card(r, false, i)).join("")}</div>
+      <div class="rb-track" aria-hidden="true">${RIBBON.map((r, i) => card(r, true, i)).join("")}</div>
+      <div class="x-chip k1"><i></i>Helen has landed</div>
+      <div class="x-chip k2"><i></i>40 m away · Exit 3</div>
+    </div>`;
 };
 const fillImgs = (html) => html.replace(/\{\{IMG:([^|}]+)\|([^|}]+)\|([^}]+)\}\}/g, (_, n, alt, kind) => img(n, alt, kind));
 // One photo per page group.
@@ -310,7 +335,8 @@ cpSync(path.join(here, "src/fonts"), path.join(out, "site/fonts"), { recursive: 
 {
   const body = readFileSync(path.join(here, "src/home.html"), "utf8")
     .replace("{{GEN}}", gen({ white: false }))
-    .replace("{{FOOT}}", footMap());
+    .replace("{{FOOT}}", footMap())
+    .replace("{{RIBBON}}", ribbon());
   const bodyImgs = fillImgs(body);
   write(
     "/",

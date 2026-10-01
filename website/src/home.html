@@ -1,14 +1,6 @@
 <main id="top" class="home">
   <!-- 1. Hero: Klein Blue stage, the line in the middle, real moments scattered around it -->
   <section class="x-hero">
-    <div class="x-scatter" aria-hidden="true">
-      <figure class="x-card c1" data-depth="18">{{IMG:reunion|A mother walking out of Arrivals with open arms|thumb}}</figure>
-      <figure class="x-card c2" data-depth="-14">{{IMG:greeter-board|A driver holding up a phone greeting board at Arrivals|thumb}}</figure>
-      <figure class="x-card c3" data-depth="22">{{IMG:look-up|Friends hugging at Arrivals, the phone showing the finding screen|thumb}}</figure>
-      <figure class="x-card c4" data-depth="-20">{{IMG:island-family|A family arriving at a Greek island airport|thumb}}</figure>
-      <div class="x-chip k1" data-depth="10"><i></i>Helen has landed</div>
-      <div class="x-chip k2" data-depth="-12"><i></i>40 m away · Exit 3</div>
-    </div>
     <div class="wrap x-hero-in">
       <h1 class="serif x-title"><span>Find each other</span><span>at Arrivals.</span></h1>
       <p class="x-sub">One link. They tap when they land. You hold up a sign they can't miss.</p>
@@ -17,6 +9,7 @@
         <a class="btn btn-ghost-w btn-lg" href="#board">Make a greeting board</a>
       </div>
     </div>
+    {{RIBBON}}
   </section>
 
   {{GEN}}
@@ -29,11 +22,6 @@
     </div>
   </section>
 
-  <section class="airports" aria-label="Airports">
-    <div class="wrap"><p class="eyebrow">Arrival guides for 3,840 airports</p></div>
-    <div class="marquee"><div class="track" id="track"></div></div>
-  </section>
-
   <!-- 3. The story: the phone stays, the screens change as you scroll -->
   <section class="x-story" id="how" aria-labelledby="how-title">
     <div class="wrap x-story-grid">
@@ -41,22 +29,18 @@
         <div class="x-phone" aria-hidden="true">
           <div class="x-screen">
             <img data-shot="0" class="on" src="/site/img/screen-landed-440.webp" srcset="/site/img/screen-landed-440.webp 440w, /site/img/screen-landed-660.webp 660w, /site/img/screen-landed-1320.webp 1320w" sizes="(max-width: 860px) 200px, 360px" alt="" width="1320" height="2868" loading="lazy" decoding="async">
-            <img data-shot="1" src="/site/img/screen-bags-440.webp" srcset="/site/img/screen-bags-440.webp 440w, /site/img/screen-bags-660.webp 660w, /site/img/screen-bags-1320.webp 1320w" sizes="(max-width: 860px) 200px, 360px" alt="" width="1320" height="2868" loading="lazy" decoding="async">
-            <img data-shot="2" src="/site/img/screen-arrivals-440.webp" srcset="/site/img/screen-arrivals-440.webp 440w, /site/img/screen-arrivals-660.webp 660w, /site/img/screen-arrivals-1320.webp 1320w" sizes="(max-width: 860px) 200px, 360px" alt="" width="1320" height="2868" loading="lazy" decoding="async">
-            <img data-shot="3" src="/site/img/screen-map-440.webp" srcset="/site/img/screen-map-440.webp 440w, /site/img/screen-map-660.webp 660w, /site/img/screen-map-1320.webp 1320w" sizes="(max-width: 860px) 200px, 360px" alt="" width="1320" height="2868" loading="lazy" decoding="async">
-            <img data-shot="4" src="/site/img/screen-arrow-440.webp" srcset="/site/img/screen-arrow-440.webp 440w, /site/img/screen-arrow-660.webp 660w, /site/img/screen-arrow-1320.webp 1320w" sizes="(max-width: 860px) 200px, 360px" alt="" width="1320" height="2868" loading="lazy" decoding="async">
-            <img data-shot="5" src="/site/img/screen-board-440.webp" srcset="/site/img/screen-board-440.webp 440w, /site/img/screen-board-660.webp 660w, /site/img/screen-board-1320.webp 1320w" sizes="(max-width: 860px) 200px, 360px" alt="" width="1320" height="2868" loading="lazy" decoding="async">
+            <img data-shot="1" src="/site/img/screen-arrivals-440.webp" srcset="/site/img/screen-arrivals-440.webp 440w, /site/img/screen-arrivals-660.webp 660w, /site/img/screen-arrivals-1320.webp 1320w" sizes="(max-width: 860px) 200px, 360px" alt="" width="1320" height="2868" loading="lazy" decoding="async">
+            <img data-shot="2" src="/site/img/screen-arrow-440.webp" srcset="/site/img/screen-arrow-440.webp 440w, /site/img/screen-arrow-660.webp 660w, /site/img/screen-arrow-1320.webp 1320w" sizes="(max-width: 860px) 200px, 360px" alt="" width="1320" height="2868" loading="lazy" decoding="async">
+            <img data-shot="3" src="/site/img/screen-board-440.webp" srcset="/site/img/screen-board-440.webp 440w, /site/img/screen-board-660.webp 660w, /site/img/screen-board-1320.webp 1320w" sizes="(max-width: 860px) 200px, 360px" alt="" width="1320" height="2868" loading="lazy" decoding="async">
           </div>
         </div>
       </div>
       <div class="x-steps">
         <h2 id="how-title" class="serif x-story-title">How a pickup goes.</h2>
         <article class="x-step on" data-step="0"><span>Passenger</span><h3>Wheels down.</h3><p>They tap I've landed. Your phone buzzes.</p></article>
-        <article class="x-step" data-step="1"><span>Passenger</span><h3>Bags take time.</h3><p>Collecting my bags. You finish your coffee.</p></article>
-        <article class="x-step" data-step="2"><span>You</span><h3>You're there.</h3><p>Tap At Arrivals. They know someone is waiting with their name.</p></article>
-        <article class="x-step" data-step="3"><span>Both</span><h3>Live, both ways.</h3><p>They tap I'm ready. You see each other moving to the exit.</p></article>
-        <article class="x-step" data-step="4"><span>Both</span><h3>Then an arrow.</h3><p>Close up, one arrow and the metres between you.</p></article>
-        <article class="x-step" data-step="5"><span>You</span><h3>Hold it up.</h3><p>Your phone becomes their name. They can make it flash.</p></article>
+        <article class="x-step" data-step="1"><span>You</span><h3>You're there.</h3><p>Tap At Arrivals. They know someone is waiting with their name.</p></article>
+        <article class="x-step" data-step="2"><span>Both</span><h3>Then an arrow.</h3><p>Close up, one arrow and the metres between you.</p></article>
+        <article class="x-step" data-step="3"><span>You</span><h3>Hold it up.</h3><p>Your phone becomes their name. They can make it flash.</p></article>
       </div>
     </div>
   </section>
@@ -89,23 +73,12 @@
           </div>
           <h3>Live flight.</h3><p>Delays and landing, as they happen.</p>
         </article>
-        <article class="bx bx-lang paper">
-          <div class="bx-demo lang" aria-hidden="true"><div class="lang-btn"><span>I'VE LANDED</span><span>ΠΡΟΣΓΕΙΩΘΗΚΑ</span><span>J'AI ATTERRI</span><span>HE ATERRIZADO</span><span>SONO ATTERRATO</span><span>ICH BIN GELANDET</span><span>JÁ ATERREI</span><span>I'VE LANDED</span></div></div>
-          <h3>Their language.</h3><p>Seven languages, picked from their phone.</p>
-        </article>
         <article class="bx bx-signal">
           <div class="bx-demo sig" aria-hidden="true">
             <div class="bars"><i></i><i></i><i></i><i></i></div>
             <div class="sig-st"></div>
           </div>
           <h3>No signal? Fine.</h3><p>Taps wait, then send the second they connect.</p>
-        </article>
-        <article class="bx bx-private ink">
-          <div class="bx-demo priv" aria-hidden="true">
-            <span class="dot d1"></span><span class="dot d2"></span><span class="pline"></span>
-            <span class="met"></span>
-          </div>
-          <h3>Private.</h3><p>Shared only while you meet. Gone after.</p>
         </article>
         <article class="bx bx-flash blue">
           <div class="bx-copy"><h3>"I can't find you."</h3><p>One tap from them. Your board lights up.</p></div>
@@ -114,11 +87,6 @@
             <div class="mini-board"><small>Welcome to Athens</small><b>Helen Smith</b></div>
           </div>
         </article>
-      </div>
-      <div class="stats">
-        <div class="stat"><b data-to="7884">7,884</b><span>Airports</span></div>
-        <div class="stat"><b data-to="7">7</b><span>Languages</span></div>
-        <div class="stat"><b>0</b><span>Apps for them</span></div>
       </div>
     </div>
   </section>
