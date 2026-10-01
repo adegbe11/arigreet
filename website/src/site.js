@@ -14,7 +14,7 @@
     const groups = [
       [".gen-head, .gen, .statement p, .eyebrow + .feat-grid, .story h2, .story-lede, .stats, .who h2, .who-lede, .faq h2, .faq-lede, .qa, .sendoff h2, .sendoff p, .prose-block, .links-sec h2, .page-photo", false],
       [".feat, .step, .plan, .link-card, .code-none", true],
-      [".photo, .plan-photo", false, "rv-img"],
+      [".photo, .plan-photo, .x-pcard", false, "rv-img"],
     ];
     const io = new IntersectionObserver((es) => es.forEach((e) => e.isIntersecting && (e.target.classList.add("in"), io.unobserve(e.target))), { rootMargin: "0px 0px -8% 0px" });
     for (const [sel, stagger, cls = "rv"] of groups)
@@ -68,6 +68,58 @@
       addEventListener("scroll", par, { passive: true });
       par();
     }
+  }
+
+  // ── Home: hero depth, story phone, photo parallax ──
+  if (!reduce) {
+    const floaters = [...document.querySelectorAll("[data-depth]")];
+    let mx = 0, my = 0;
+    const depth = () =>
+      floaters.forEach((el) => {
+        const d = +el.dataset.depth;
+        el.style.setProperty("--tx", (mx * d).toFixed(1) + "px");
+        el.style.setProperty("--ty", (my * d - scrollY * d * 0.012).toFixed(1) + "px");
+      });
+    if (floaters.length) {
+      addEventListener("pointermove", (e) => {
+        mx = e.clientX / innerWidth - 0.5;
+        my = e.clientY / innerHeight - 0.5;
+        depth();
+      }, { passive: true });
+      addEventListener("scroll", depth, { passive: true });
+    }
+    const bgs = [...document.querySelectorAll(".x-bg img")];
+    const drift = () =>
+      bgs.forEach((im) => {
+        const r = im.parentElement.parentElement.getBoundingClientRect();
+        if (r.bottom < 0 || r.top > innerHeight) return;
+        const k = (r.top + r.height / 2 - innerHeight / 2) / innerHeight;
+        im.style.transform = `translateY(${(k * -60).toFixed(1)}px) scale(1.05)`;
+      });
+    if (bgs.length) {
+      addEventListener("scroll", drift, { passive: true });
+      drift();
+    }
+    if ("IntersectionObserver" in window) {
+      const lio = new IntersectionObserver((es) => es.forEach((e) => {
+        if (!e.isIntersecting) return;
+        e.target.querySelectorAll("span").forEach((s, i) => setTimeout(() => s.classList.add("in"), i * 260));
+        lio.unobserve(e.target);
+      }), { threshold: 0.4 });
+      document.querySelectorAll(".x-lines").forEach((el) => lio.observe(el));
+    }
+  }
+  const steps = [...document.querySelectorAll(".x-step")];
+  const shots = [...document.querySelectorAll(".x-screen img")];
+  if (steps.length && "IntersectionObserver" in window) {
+    const sio = new IntersectionObserver((es) => es.forEach((e) => {
+      if (!e.isIntersecting) return;
+      const n = e.target.dataset.step;
+      steps.forEach((s) => s.classList.toggle("on", s === e.target));
+      shots.forEach((im) => im.classList.toggle("on", im.dataset.shot === n));
+    }), { rootMargin: "-45% 0px -45% 0px" });
+    steps.forEach((s) => sio.observe(s));
+    shots.forEach((im) => (im.loading = "eager"));
   }
 
   const track = document.getElementById("track");

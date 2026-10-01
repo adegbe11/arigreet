@@ -1,164 +1,160 @@
-<main id="top">
-  <section class="hero">
-    <div class="wrap hero-inner">
-      <h1 class="serif"><span>Find each other</span><span>at Arrivals.</span></h1>
-      <p class="hero-sub">
-        <span>The airport meet and greet app for your</span>
-        <span class="rotor" aria-hidden="true"><span class="rotor-list"><span>mum</span><span>client</span><span>hotel guest</span><span>best friend</span><span>new hire</span><span>mum</span></span></span>
-        <span class="sr-only">mum, client, hotel guest, best friend or new hire</span>
-      </p>
-      <p class="hero-lede">Send one link. See when they land, follow them to the exit, and hold up a digital pickup sign they can't miss. Nothing for them to download.</p>
+<main id="top" class="home">
+  <!-- 1. Hero: Klein Blue stage, the line in the middle, real moments scattered around it -->
+  <section class="x-hero">
+    <div class="x-scatter" aria-hidden="true">
+      <figure class="x-card c1" data-depth="18">{{IMG:reunion|A mother walking out of Arrivals with open arms|card}}</figure>
+      <figure class="x-card c2" data-depth="-14">{{IMG:greeter-board|A driver holding up a phone greeting board at Arrivals|card}}</figure>
+      <figure class="x-card c3" data-depth="22">{{IMG:look-up|Friends hugging at Arrivals, the phone showing the finding screen|card}}</figure>
+      <figure class="x-card c4" data-depth="-20">{{IMG:island-family|A family arriving at a Greek island airport|card}}</figure>
+      <div class="x-chip k1" data-depth="10"><i></i>Helen has landed</div>
+      <div class="x-chip k2" data-depth="-12"><i></i>40 m away · Exit 3</div>
+    </div>
+    <div class="wrap x-hero-in">
+      <h1 class="serif x-title"><span>Find each other</span><span>at Arrivals.</span></h1>
+      <p class="x-sub">One link. They tap when they land. You hold up a sign they can't miss.</p>
       <div class="hero-cta">
-        <a class="btn btn-white btn-lg" href="/app">Create a Greet. It's free</a>
+        <a class="btn btn-white btn-lg" href="/app">Create a Greet</a>
         <a class="btn btn-ghost-w btn-lg" href="#board">Make a greeting board</a>
-      </div>
-      <div class="hero-photo">
-        {{IMG:greeter-board|A driver at airport Arrivals holding up a phone showing the name Helen Smith on a Klein Blue greeting board|hero}}
-        <div class="notifs" aria-hidden="true">
-          <div class="notif"><span class="ic" style="color:#fff"><svg><use href="#pin"/></svg></span><div><small><span>Arigreet</span><span>now</span></small><b>Helen has landed</b>A3 601 from London is on the ground.</div></div>
-          <div class="notif"><span class="ic" style="color:#fff"><svg><use href="#pin"/></svg></span><div><small><span>Arigreet</span><span>now</span></small><b>Helen is collecting her bags</b>Take your time getting to Exit 3.</div></div>
-          <div class="notif"><span class="ic" style="color:#fff"><svg><use href="#pin"/></svg></span><div><small><span>Arigreet</span><span>now</span></small><b>Helen is 40 m away</b>Hold up your GreetBoard.</div></div>
-        </div>
       </div>
     </div>
   </section>
 
   {{GEN}}
 
+  <!-- 2. The problem: full-bleed photo, words on top -->
+  <section class="x-bleed x-problem">
+    <div class="x-bg">{{IMG:barrier|Drivers at an arrivals barrier holding paper signs, one of them on the phone|bleed}}</div>
+    <div class="wrap x-bleed-in">
+      <p class="x-kicker">Arrivals, every day</p>
+      <h2 class="serif x-lines">
+        <span>Fifty paper signs.</span>
+        <span>Phones that won't connect.</span>
+        <span>One tired passenger.</span>
+      </h2>
+      <p class="x-answer">We built a calmer way to say hello.</p>
+    </div>
+  </section>
 
   <section class="airports" aria-label="Airports">
-    <div class="wrap">
-      <p class="eyebrow">Works at 7,884 airports. Arrival guides for the busiest.</p>
-    </div>
-    <div class="marquee">
-      <div class="track" id="track"></div>
+    <div class="wrap"><p class="eyebrow">Arrival guides for 3,840 airports</p></div>
+    <div class="marquee"><div class="track" id="track"></div></div>
+  </section>
+
+  <!-- 3. The story: the phone stays, the screens change as you scroll -->
+  <section class="x-story" id="how" aria-labelledby="how-title">
+    <div class="wrap x-story-grid">
+      <div class="x-phone-col">
+        <div class="x-phone" aria-hidden="true">
+          <div class="x-screen">
+            <img data-shot="0" class="on" src="/site/img/screen-landed-780.webp" alt="" width="780" height="1688" loading="lazy" decoding="async">
+            <img data-shot="1" src="/site/img/screen-bags-780.webp" alt="" width="780" height="1688" loading="lazy" decoding="async">
+            <img data-shot="2" src="/site/img/screen-arrivals-780.webp" alt="" width="780" height="1688" loading="lazy" decoding="async">
+            <img data-shot="3" src="/site/img/screen-map-780.webp" alt="" width="780" height="1688" loading="lazy" decoding="async">
+            <img data-shot="4" src="/site/img/screen-arrow-780.webp" alt="" width="780" height="1688" loading="lazy" decoding="async">
+            <img data-shot="5" src="/site/img/screen-board-780.webp" alt="" width="780" height="1688" loading="lazy" decoding="async">
+          </div>
+        </div>
+      </div>
+      <div class="x-steps">
+        <h2 id="how-title" class="serif x-story-title">How a pickup goes.</h2>
+        <article class="x-step on" data-step="0"><span>Passenger</span><h3>Wheels down.</h3><p>They tap I've landed. Your phone buzzes.</p></article>
+        <article class="x-step" data-step="1"><span>Passenger</span><h3>Bags take time.</h3><p>Collecting my bags. You finish your coffee.</p></article>
+        <article class="x-step" data-step="2"><span>You</span><h3>You're there.</h3><p>Tap At Arrivals. They know someone is waiting with their name.</p></article>
+        <article class="x-step" data-step="3"><span>Both</span><h3>Live, both ways.</h3><p>They tap I'm ready. You see each other moving to the exit.</p></article>
+        <article class="x-step" data-step="4"><span>Both</span><h3>Then an arrow.</h3><p>Close up, one arrow and the metres between you.</p></article>
+        <article class="x-step" data-step="5"><span>You</span><h3>Hold it up.</h3><p>Your phone becomes their name. They can make it flash.</p></article>
+      </div>
     </div>
   </section>
 
-  <section class="statement">
-    <div class="wrap statement-grid">
-      <figure class="photo">{{IMG:barrier|Drivers at an arrivals barrier holding paper signs while one of them phones a passenger he can't find|wide}}</figure>
-      <p>Arrivals is a crowd of people holding phones, all calling someone. <em>Arigreet turns your pickup into one link.</em> They tap when they land. You see them coming.</p>
+  <!-- 4. The moment: full-bleed photo, one line -->
+  <section class="x-bleed x-moment">
+    <div class="x-bg">{{IMG:look-up|Two friends hugging at Arrivals|bleed}}</div>
+    <div class="wrap x-bleed-in">
+      <h2 class="serif x-big">Look up.<br>They're right here.</h2>
+      <p class="x-answer">Location stops the second you meet.</p>
     </div>
   </section>
 
-  <section class="features" id="how" aria-labelledby="how-title">
+  <!-- 5. What it does -->
+  <section class="features" aria-labelledby="feat-title">
     <div class="wrap">
-      <h2 id="how-title" class="eyebrow" style="margin-bottom:18px">How it works</h2>
+      <h2 id="feat-title" class="serif x-sec-title">Small taps. No chaos.</h2>
       <div class="feat-grid">
         <div class="feat">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.5.5l3-3a5 5 0 0 0-7-7l-1.7 1.7"/><path d="M14 11a5 5 0 0 0-7.5-.5l-3 3a5 5 0 0 0 7 7l1.7-1.7"/></svg>
-          <h3>One link, nothing to install</h3>
-          <p>Add their name and flight. Send the link on WhatsApp, Messages or email. It opens in any browser.</p>
+          <h3>One link</h3>
+          <p>Opens in any browser. No app, no account for them.</p>
         </div>
         <div class="feat">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 16l20-6-4-3-6 2-6-5-2 1 4 6-5 1-2-2-1 1z"/><path d="M3 21h18"/></svg>
-          <h3>They tap, you know</h3>
-          <p>I've landed. Collecting my bags. I'm ready. One button at a time, in their language.</p>
+          <h3>Live flight</h3>
+          <p>Delays and the new landing time, as they happen.</p>
         </div>
         <div class="feat">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="3 11 22 2 13 21 11 13 3 11"/></svg>
-          <h3>A live map, then an arrow</h3>
-          <p>When they're ready you both see each other moving. Close up, one big arrow points the way with the distance in metres.</p>
-        </div>
-        <div class="feat">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="14" rx="2"/><path d="M8 21h8M12 18v3"/><path d="M7 11h10"/></svg>
-          <h3>Your phone becomes a name sign</h3>
-          <p>The GreetBoard fills your screen with their name. They can make it flash so they find you across the hall.</p>
-        </div>
-        <div class="feat">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="11" width="16" height="10" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></svg>
-          <h3>Private by design</h3>
-          <p>Location is shared only during the pickup, only with each other. It stops and is deleted the moment you meet.</p>
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M2 12h20M12 2a15 15 0 0 1 0 20M12 2a15 15 0 0 0 0 20"/></svg>
+          <h3>Their language</h3>
+          <p>English, Greek, French, Spanish, Italian, German, Portuguese.</p>
         </div>
         <div class="feat">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 1l22 22"/><path d="M16.7 11.1A11 11 0 0 1 19 12.6M5 12.6a11 11 0 0 1 5.2-2.5M10.7 5A16 16 0 0 1 22.6 9M1.4 9a16 16 0 0 1 4.4-2.8M8.5 16.1a6 6 0 0 1 7 0"/><circle cx="12" cy="20" r="1"/></svg>
-          <h3>Made for bad signal</h3>
-          <p>Taps made in a dead zone wait on the phone and send the second the signal comes back.</p>
+          <h3>No signal? Fine.</h3>
+          <p>Taps wait and send the second they connect.</p>
+        </div>
+        <div class="feat">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="11" width="16" height="10" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></svg>
+          <h3>Private</h3>
+          <p>Location only while you're meeting. Deleted after.</p>
+        </div>
+        <div class="feat">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.7 21a2 2 0 0 1-3.4 0"/></svg>
+          <h3>"I can't find you"</h3>
+          <p>One button. Your board lights up.</p>
         </div>
       </div>
-    </div>
-  </section>
-
-  <section class="story" aria-labelledby="story-title">
-    <div class="wrap">
-      <h2 id="story-title" class="serif">How a pickup goes.</h2>
-      <p class="story-lede">Five taps from wheels down to hello. Each one tells the other person exactly where things stand.</p>
-      <div class="story-photos">
-        <figure class="photo">{{IMG:landed|A passenger on a plane after landing, tapping I've landed on the Arigreet page|half}}<figcaption>Wheels down. One tap tells you.</figcaption></figure>
-        <figure class="photo">{{IMG:look-up|A woman hugging a friend at Arrivals, her phone still showing the Arigreet finding screen that says Look up|half}}<figcaption>Close up, the arrow says look up.</figcaption></figure>
-      </div>
-      <ol class="steps" style="list-style:none;margin-top:56px;padding:0">
-        <li class="step"><span class="n">1 · PASSENGER</span><span class="tap">I've landed</span><p>Your phone buzzes the moment the plane is on the ground.</p></li>
-        <li class="step"><span class="n">2 · PASSENGER</span><span class="tap">Collecting my bags</span><p>You know to wait. No calls from the carousel.</p></li>
-        <li class="step"><span class="n">3 · GREETER</span><span class="tap ghost">At Arrivals</span><p>They see you're there, at Exit 3, with their name.</p></li>
-        <li class="step"><span class="n">4 · PASSENGER</span><span class="tap">I'm ready</span><p>Live location turns on for both of you, map and arrow.</p></li>
-        <li class="step"><span class="n">5 · BOTH</span><span class="tap ghost">We met</span><p>Sharing stops. The link closes. Done.</p></li>
-      </ol>
       <div class="stats">
-        <div class="stat"><b data-to="7884">7,884</b><span>Airports worldwide</span></div>
-        <div class="stat"><b data-to="7">7</b><span>Languages for passengers</span></div>
-        <div class="stat"><b>0</b><span>Apps they need to install</span></div>
+        <div class="stat"><b data-to="7884">7,884</b><span>Airports</span></div>
+        <div class="stat"><b data-to="7">7</b><span>Languages</span></div>
+        <div class="stat"><b>0</b><span>Apps for them</span></div>
       </div>
     </div>
   </section>
 
-  <section class="who" id="who" aria-labelledby="who-title">
+  <!-- 6. Who: two photo cards, words on the photo -->
+  <section class="x-who" id="who" aria-labelledby="who-title">
     <div class="wrap">
-      <h2 id="who-title" class="serif">Who it's for.</h2>
-      <p class="who-lede">Anyone standing at Arrivals for someone else.</p>
-      <div class="plans">
-        <article class="plan">
-          <figure class="plan-photo">{{IMG:reunion|A mother walking out of Arrivals with open arms towards her son|card}}</figure>
-          <span class="tag">Personal</span>
-          <h3>Family &amp; friends</h3>
-          <p>Picking up your mum, your partner or a friend you've never met in person.</p>
-          <ul>
-            <li>Unlimited Greets</li>
-            <li>Landed, bags and ready alerts</li>
-            <li>Live map and finding arrow</li>
-            <li>GreetBoard name sign</li>
-          </ul>
-          <a class="btn btn-ikb" href="/app">Create a Greet</a>
-        </article>
-        <article class="plan dark">
-          <figure class="plan-photo">{{IMG:chauffeur|A chauffeur opening the car door for a smiling traveller outside the terminal at dusk|card}}</figure>
-          <span class="tag">Business</span>
-          <h3>Drivers, hotels &amp; transfers</h3>
-          <p>Meet guests who don't speak your language and arrive tired, on time or three hours late.</p>
-          <ul>
-            <li>Your company name and car on every pickup</li>
-            <li>Live flight times, delays and gates</li>
-            <li>Passenger pages in 7 languages</li>
-            <li>Several pickups a day, one dashboard</li>
-          </ul>
-          <a class="btn btn-white" href="/for/chauffeurs/">See how drivers use it</a>
-        </article>
+      <h2 id="who-title" class="serif x-sec-title">Who it's for.</h2>
+      <div class="x-who-grid">
+        <a class="x-pcard" href="/for/families/">
+          {{IMG:reunion|A mother walking out of Arrivals with open arms towards her son|card}}
+          <div class="x-pcard-in"><span>Family &amp; friends</span><h3 class="serif">Mum's flight lands at 14:20.</h3><p>You'll know when she's out.</p></div>
+        </a>
+        <a class="x-pcard" href="/for/chauffeurs/">
+          {{IMG:chauffeur|A chauffeur opening the car door for a traveller at dusk|card}}
+          <div class="x-pcard-in"><span>Drivers, hotels &amp; transfers</span><h3 class="serif">Every guest, met by name.</h3><p>Your car, your company, their language.</p></div>
+        </a>
       </div>
     </div>
   </section>
 
   <section class="faq" id="faq" aria-labelledby="faq-title">
     <div class="wrap faq-grid">
+      <div><h2 id="faq-title" class="serif">Questions.</h2></div>
       <div>
-        <h2 id="faq-title" class="serif">Questions.</h2>
-        <p class="faq-lede">Everything people ask before their first pickup.</p>
-      </div>
-      <div>
-        <details class="qa" open><summary>Does the person I'm meeting need the app?<i></i></summary><p>No. They tap your link and it opens in their phone's browser. No download, no account, no password.</p></details>
-        <details class="qa"><summary>What if they lose signal in baggage claim?<i></i></summary><p>Their taps wait on the phone and send as soon as signal comes back. Their pickup details stay saved, so they can still see where to meet you.</p></details>
-        <details class="qa"><summary>Who can see my location?<i></i></summary><p>Only the person you're meeting, and only after they tap I'm ready. Sharing stops and the location is deleted when you tap We met.</p></details>
-        <details class="qa"><summary>Which airports does it work at?<i></i></summary><p>7,884 airports, searchable by city, name or code, with terminals for the busiest ones.</p></details>
-        <details class="qa"><summary>What languages does the passenger see?<i></i></summary><p>English, Greek, French, Spanish, Italian, German and Portuguese. Their page picks their phone's language, and they can switch it.</p></details>
-        <details class="qa"><summary>How accurate is the finding arrow?<i></i></summary><p>A few metres outdoors. Inside terminals GPS is weaker, so the app says so, and the GreetBoard and the "I'm at Exit 3" button take over for the last steps.</p></details>
+        <details class="qa" open><summary>Do they need the app?<i></i></summary><p>No. Your link opens in their phone's browser.</p></details>
+        <details class="qa"><summary>No signal in baggage claim?<i></i></summary><p>Taps wait on the phone and send when signal comes back. The meeting point stays on screen.</p></details>
+        <details class="qa"><summary>Who sees my location?<i></i></summary><p>Only the person you're meeting, only after they tap I'm ready. Deleted when you meet.</p></details>
+        <details class="qa"><summary>Which airports?<i></i></summary><p>All 7,884 with an airport code, with arrival guides for 3,840.</p></details>
+        <details class="qa"><summary>How accurate is the arrow?<i></i></summary><p>A few metres outdoors. Inside, the meeting point and the GreetBoard finish the job.</p></details>
       </div>
     </div>
   </section>
 
-  <section class="sendoff">
+  <!-- 7. Send-off: photo behind, Klein Blue over it -->
+  <section class="sendoff x-sendoff">
+    <div class="x-bg">{{IMG:reunion|A reunion at Arrivals|bleed}}</div>
     <div class="wrap">
       <h2 class="serif">See you at Arrivals.</h2>
-      <p>Your next pickup takes one minute to set up.</p>
       <a class="btn btn-white btn-lg" href="/app">Create a Greet</a>
       {{FOOT}}
     </div>

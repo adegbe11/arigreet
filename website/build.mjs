@@ -35,6 +35,7 @@ const SIZES = {
   half: "(max-width: 700px) 100vw, 50vw",
   card: "(max-width: 700px) 100vw, 560px",
   page: "(max-width: 900px) 100vw, 45vw",
+  bleed: "100vw",
 };
 const img = (name, alt, kind = "card") => {
   const ws = (IMG_WIDTHS[name] || []).sort((a, b) => a - b);
@@ -293,7 +294,7 @@ rmSync(out, { recursive: true, force: true });
 mkdirSync(path.join(out, "site"), { recursive: true });
 writeFileSync(
   path.join(out, "site/site.css"),
-  readFileSync(path.join(here, "src/base.css"), "utf8") + "\n" + readFileSync(path.join(here, "src/extra.css"), "utf8"),
+  ["base.css", "extra.css", "home.css"].map((f) => readFileSync(path.join(here, "src", f), "utf8")).join("\n"),
 );
 writeFileSync(path.join(out, "site/site.js"), readFileSync(path.join(here, "src/site.js"), "utf8"));
 cpSync(IMG_DIR, path.join(out, "site/img"), { recursive: true });
