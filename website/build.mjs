@@ -35,7 +35,6 @@ const SIZES = {
   half: "(max-width: 700px) 100vw, 50vw",
   card: "(max-width: 700px) 100vw, 560px",
   page: "(max-width: 900px) 100vw, 45vw",
-  bleed: "100vw",
 };
 const img = (name, alt, kind = "card") => {
   const ws = (IMG_WIDTHS[name] || []).sort((a, b) => a - b);
@@ -173,13 +172,13 @@ const nav = () => `<header class="nav">
 
 const footMap = () => {
   const cols = Object.entries(GROUPS).map(
-    ([g, label]) => `<div><h3 class="fm-h">${esc(label)}</h3><ul>${PAGES.filter((p) => p.group === g)
+    ([g, label]) => `<div><h4>${esc(label)}</h4><ul>${PAGES.filter((p) => p.group === g)
       .map((p) => `<li><a href="/${p.slug}/">${esc(p.nav)}</a></li>`)
       .join("")}</ul></div>`,
   );
   const top = POPULAR.map((c) => BY_IATA.get(c)).filter(Boolean).slice(0, 10);
   cols.push(
-    `<div><h3 class="fm-h">Airports</h3><ul>${top.map((a) => `<li><a href="/airports/${a.slug}/">${esc(placeOf(a))} (${a.iata})</a></li>`).join("")}<li><a href="/airports/">All airport guides</a></li></ul></div>`,
+    `<div><h4>Airports</h4><ul>${top.map((a) => `<li><a href="/airports/${a.slug}/">${esc(placeOf(a))} (${a.iata})</a></li>`).join("")}<li><a href="/airports/">All airport guides</a></li></ul></div>`,
   );
   return `<div class="foot-map">${cols.join("")}</div>
       <footer class="foot">
@@ -294,7 +293,7 @@ rmSync(out, { recursive: true, force: true });
 mkdirSync(path.join(out, "site"), { recursive: true });
 writeFileSync(
   path.join(out, "site/site.css"),
-  ["base.css", "extra.css", "home.css"].map((f) => readFileSync(path.join(here, "src", f), "utf8")).join("\n"),
+  readFileSync(path.join(here, "src/base.css"), "utf8") + "\n" + readFileSync(path.join(here, "src/extra.css"), "utf8"),
 );
 writeFileSync(path.join(out, "site/site.js"), readFileSync(path.join(here, "src/site.js"), "utf8"));
 cpSync(IMG_DIR, path.join(out, "site/img"), { recursive: true });
