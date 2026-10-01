@@ -1,0 +1,50 @@
+# Render Blueprint for Arigreet. New → Blueprint → pick this repo.
+services:
+  - type: web
+    name: arigreet
+    runtime: node
+    plan: starter # a paid instance is needed for the disk that keeps your data
+    buildCommand: npm ci --include=dev && npm run build
+    startCommand: npm start
+    healthCheckPath: /healthz
+    disk:
+      name: arigreet-data
+      mountPath: /var/data
+      sizeGB: 1
+    envVars:
+      - key: NODE_VERSION
+        value: "22"
+      - key: DB_PATH
+        value: /var/data/arigreet.sqlite
+      - key: PUBLIC_URL
+        sync: false # e.g. https://arigreet.com
+      - key: VAPID_SUBJECT
+        sync: false # e.g. mailto:hello@arigreet.com
+      - key: FLIGHTAWARE_API_KEY
+        sync: false
+      - key: SMTP_HOST
+        value: smtp.resend.com
+      - key: SMTP_PORT
+        value: "465"
+      - key: SMTP_SECURE
+        value: "true"
+      - key: SMTP_USER
+        value: resend
+      - key: SMTP_PASSWORD
+        sync: false # your Resend API key
+      - key: MAIL_FROM
+        sync: false # e.g. Arigreet <hello@arigreet.com>
+      - key: MAPTILER_KEY
+        sync: false # map tiles for production, from maptiler.com
+      - key: LEGAL_NAME
+        sync: false # your name or company, shown on the Privacy and Terms pages
+      - key: LEGAL_ADDRESS
+        sync: false
+      - key: CONTACT_EMAIL
+        sync: false # where people write about their data
+      - key: GOOGLE_WEB_CLIENT_ID
+        sync: false # Google Cloud → Credentials → Web client ID (Continue with Google)
+      - key: FIREBASE_SERVICE_ACCOUNT
+        sync: false # Firebase service account JSON (Android alerts)
+      - key: ANDROID_CERT_SHA256
+        sync: false # Play Console → App signing → SHA-256 (pickup links open the app)

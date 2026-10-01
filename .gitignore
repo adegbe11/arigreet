@@ -1,0 +1,12 @@
+node_modules/
+dist/
+*.sqlite*
+.env
+.preview-dist/
+Claude outputs/
+
+# Android signing and Firebase secrets never go in git
+*.jks
+*.keystore
+android/app/google-services.json
+.env.production.local

@@ -1,0 +1,54 @@
+{
+  "name": "arigreet",
+  "version": "1.0.0",
+  "description": "Arigreet — airport meet-and-greet",
+  "main": "index.js",
+  "scripts": {
+    "test": "node --test",
+    "dev": "vite",
+    "build": "vite build",
+    "start": "node --env-file-if-exists=.env server.js",
+    "format": "prettier --write src lib server.js public/sw.js test vite.config.js index.html"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "module",
+  "dependencies": {
+    "@capacitor-community/keep-awake": "^8.0.1",
+    "@capacitor/android": "^8.5.2",
+    "@capacitor/app": "^8.1.1",
+    "@capacitor/core": "^8.5.2",
+    "@capacitor/haptics": "^8.0.2",
+    "@capacitor/push-notifications": "^8.1.2",
+    "@capacitor/share": "^8.0.2",
+    "@capacitor/splash-screen": "^8.0.2",
+    "@capacitor/status-bar": "^8.0.3",
+    "@capgo/capacitor-social-login": "^8.5.12",
+    "compression": "^1.8.2",
+    "express": "^5.2.1",
+    "google-auth-library": "^11.1.0",
+    "helmet": "^8.3.0",
+    "leaflet": "^1.9.4",
+    "lucide-react": "^1.49.0",
+    "nodemailer": "^10.0.13",
+    "qrcode": "^1.5.4",
+    "react": "^19.3.0",
+    "react-dom": "^19.3.0",
+    "react-leaflet": "^5.0.0",
+    "web-push": "^3.6.7"
+  },
+  "devDependencies": {
+    "@capacitor/assets": "^3.0.5",
+    "@capacitor/cli": "^8.5.2",
+    "@vitejs/plugin-react": "^6.1.1",
+    "prettier": "^3.9.9",
+    "vite": "^8.3.1"
+  },
+  "optionalDependencies": {
+    "@rolldown/binding-win32-x64-msvc": "^1.2.11"
+  },
+  "engines": {
+    "node": ">=22.13"
+  }
+}

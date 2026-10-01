@@ -1,0 +1,37 @@
+# Run once, by hand (Actions → "Make Android upload key" → Run workflow).
+# It creates the key Google Play uses to trust your uploads, so you don't
+# need Java or Android Studio on your laptop.
+#
+# Before running, add the repository secret ANDROID_KEYSTORE_PASSWORD
+# (a long password you keep in your password manager).
+# After it finishes: download the "upload-key" artifact, keep the .jks file
+# somewhere safe (if you lose it you need Google to reset it), copy the text
+# from upload.jks.base64 into a new secret ANDROID_KEYSTORE_BASE64, add the
+# secret ANDROID_KEY_ALIAS = arigreet, then DELETE the artifact from the run.
+name: Make Android upload key
+
+on:
+  workflow_dispatch:
+
+jobs:
+  key:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: 21
+      - name: Create keystore
+        env:
+          PW: ${{ secrets.ANDROID_KEYSTORE_PASSWORD }}
+        run: |
+          if [ -z "$PW" ]; then echo "Add the ANDROID_KEYSTORE_PASSWORD secret first."; exit 1; fi
+          mkdir key
+          keytool -genkeypair -v -keystore key/upload.jks -alias arigreet -keyalg RSA -keysize 4096 \
+            -validity 10000 -storepass "$PW" -keypass "$PW" -dname "CN=Arigreet, O=Arigreet, C=GR"
+          base64 -w0 key/upload.jks > key/upload.jks.base64
+      - uses: actions/upload-artifact@v4
+        with:
+          name: upload-key
+          path: key/
+          retention-days: 1

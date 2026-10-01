@@ -1,0 +1,88 @@
+# Builds the Arigreet Android app on every push to main (and on demand).
+# Download the results from the run's "Artifacts":
+#   - arigreet-debug.apk      install straight on an Android phone to test
+#   - arigreet-release.aab    upload to Google Play (only when the signing secrets are set)
+#
+# Repository secrets (Settings → Secrets and variables → Actions):
+#   ARIGREET_URL                 your live address, e.g. https://arigreet.com (the app talks to it)
+#   GOOGLE_SERVICES_JSON         contents of google-services.json from Firebase (for alerts)
+#   ANDROID_KEYSTORE_BASE64      your upload keystore, base64-encoded
+#   ANDROID_KEYSTORE_PASSWORD    its password
+#   ANDROID_KEY_ALIAS            usually "arigreet"
+name: Android app
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: 21
+
+      - uses: android-actions/setup-android@v3
+
+      - name: Build the app's screens (they live inside the phone)
+        env:
+          ARIGREET_URL: ${{ secrets.ARIGREET_URL }}
+        run: |
+          npm ci --include=dev
+          node scripts/cap-url.mjs
+          npm run build
+
+      - name: Firebase config for alerts
+        env:
+          GOOGLE_SERVICES_JSON: ${{ secrets.GOOGLE_SERVICES_JSON }}
+        run: |
+          if [ -n "$GOOGLE_SERVICES_JSON" ]; then echo "$GOOGLE_SERVICES_JSON" > android/app/google-services.json; fi
+
+      - name: Sync native project
+        run: npx cap sync android
+
+      - name: Signing key
+        env:
+          KS: ${{ secrets.ANDROID_KEYSTORE_BASE64 }}
+          PW: ${{ secrets.ANDROID_KEYSTORE_PASSWORD }}
+        run: |
+          if [ -n "$KS" ]; then
+            echo "$KS" | base64 -d > "$RUNNER_TEMP/upload.jks"
+            echo "ARIGREET_KEYSTORE=$RUNNER_TEMP/upload.jks" >> "$GITHUB_ENV"
+            echo "Fingerprints for Google Cloud (Google sign-in) — copy SHA1:"
+            keytool -list -v -keystore "$RUNNER_TEMP/upload.jks" -storepass "$PW" | grep -E "SHA1:|SHA256:"
+          fi
+
+      - name: Build
+        working-directory: android
+        env:
+          ARIGREET_VERSION_CODE: ${{ github.run_number }}
+          ARIGREET_VERSION_NAME: 1.0.${{ github.run_number }}
+          ARIGREET_KEYSTORE_PASSWORD: ${{ secrets.ANDROID_KEYSTORE_PASSWORD }}
+          ARIGREET_KEY_ALIAS: ${{ secrets.ANDROID_KEY_ALIAS }}
+          ARIGREET_URL: ${{ secrets.ARIGREET_URL }}
+        run: |
+          chmod +x gradlew
+          ./gradlew assembleDebug
+          if [ -n "$ARIGREET_KEYSTORE" ]; then ./gradlew bundleRelease; fi
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: arigreet-debug.apk
+          path: android/app/build/outputs/apk/debug/app-debug.apk
+
+      - uses: actions/upload-artifact@v4
+        if: ${{ env.ARIGREET_KEYSTORE != '' }}
+        with:
+          name: arigreet-release.aab
+          path: android/app/build/outputs/bundle/release/app-release.aab
