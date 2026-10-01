@@ -12,6 +12,8 @@ import Board from "./Board.jsx";
 import Sheets from "./Sheets.jsx";
 import Legal from "./Legal.jsx";
 import Finder from "./Finder.jsx";
+import { loadAirports } from "./AirportPicker.jsx";
+import { TERMINALS } from "./terminals.js";
 import { translate, pickLang } from "./i18n.js";
 import { isNative, platform, nativePushToken, nativeSetup, haptic } from "./native.js";
 import { AppCtx, ConnectionBanner, LIVE, ENDED, localDate, first } from "./ui.jsx";
@@ -582,6 +584,42 @@ export default function App() {
       },
     });
   };
+  /* Arriving from the website's greeting board generator:
+     /app?name=Helen%20Smith&airport=ATH&style=klein opens Create Greet prefilled. */
+  useEffect(() => {
+    if (isGuest) return;
+    const q = new URLSearchParams(location.search);
+    const name = (q.get("name") || "").trim().slice(0, 80);
+    if (!name) return;
+    history.replaceState(null, "", location.pathname);
+    setWelcome(false);
+    const theme = { klein: "Signature", dark: "Dark", light: "Light" }[q.get("style")] || "Signature";
+    const iata = (q.get("airport") || "").toUpperCase();
+    const open = (extra = {}) => {
+      create();
+      setFlow((f) => f && { ...f, initial: { ...f.initial, name, theme, ...extra } });
+    };
+    if (!/^[A-Z]{3}$/.test(iata)) return open();
+    loadAirports()
+      .then((list) => {
+        const a = list.find((x) => x.iata === iata);
+        const t = TERMINALS[iata];
+        open(
+          a
+            ? {
+                airport: `${a.city} (${a.iata})`,
+                airportCode: a.iata,
+                airportTimezone: a.tz,
+                airportFull: a.name,
+                airportLat: a.lat,
+                airportLng: a.lon,
+                terminal: t?.length === 1 ? t[0] : "",
+              }
+            : {},
+        );
+      })
+      .catch(() => open());
+  }, []);
   const editGreet = () => setFlow({ editing: true, initial: { ...blankGreet(), ...g } });
   const submitGreet = async (data, token) => {
     const next = flow?.editing

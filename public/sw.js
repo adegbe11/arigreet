@@ -1,14 +1,14 @@
-const CACHE = "arigreet-v4";
+const CACHE = "arigreet-v5";
 const MEDIA = "arigreet-guest-media:";
 self.addEventListener("install", (event) =>
   event.waitUntil(
     caches.open(CACHE).then(async (c) => {
-      const root = await fetch("/");
+      const root = await fetch("/app");
       const html = await root.clone().text();
       const assets = [...html.matchAll(/(?:src|href)="([^"]+)"/g)]
         .map((m) => m[1])
         .filter((v) => v.startsWith("/assets/"));
-      await c.put("/", root);
+      await c.put("/app", root);
       await c.addAll([
         "/manifest.json",
         "/icon.svg",
@@ -139,7 +139,7 @@ self.addEventListener("fetch", (event) => {
         return res;
       })
       .catch(() =>
-        caches.match(event.request).then((r) => r || caches.match("/")),
+        caches.match(event.request).then((r) => r || caches.match("/app")),
       ),
   );
 });
@@ -150,7 +150,7 @@ self.addEventListener("push", (event) => {
       body: data.body,
       icon: "/icon-192.png",
       tag: "arigreet-update",
-      data: { url: data.url || "/" },
+      data: { url: data.url || "/app" },
     }),
   );
 });

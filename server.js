@@ -32,11 +32,11 @@ app.use(
       directives: {
         "default-src": ["'self'"],
         "script-src": ["'self'", "https://accounts.google.com/gsi/client"],
-        "style-src": ["'self'", "'unsafe-inline'", "https://accounts.google.com/gsi/style"],
+        "style-src": ["'self'", "'unsafe-inline'", "https://accounts.google.com/gsi/style", "https://fonts.googleapis.com"],
         "img-src": ["'self'", "data:", "blob:", "https:"],
         "connect-src": ["'self'", "https://accounts.google.com/gsi/"],
         "frame-src": ["https://accounts.google.com/gsi/"],
-        "font-src": ["'self'", "data:"],
+        "font-src": ["'self'", "data:", "https://fonts.gstatic.com"],
         "worker-src": ["'self'"],
         "object-src": ["'none'"],
         "frame-ancestors": ["'none'"],
@@ -229,7 +229,7 @@ async function push(g, title, body, to = "both") {
     rows.map(async (row) => {
       try {
         const data = JSON.parse(row.data);
-        const url = row.user ? "/" : "/g/" + g.token;
+        const url = row.user ? "/app" : "/g/" + g.token;
         if (data.fcm) await sendNative(data.fcm, title, body, url);
         else await webpush.sendNotification(data, JSON.stringify({ title, body, url }));
       } catch (e) {
@@ -1043,7 +1043,18 @@ setInterval(() => {
     }
   }
 }, 60000).unref();
-app.use(express.static("dist"));
+// arigreet.com: the public website (home, keyword pages, airport guides) lives
+// at the root; the app itself opens at /app.
+app.use(
+  express.static("website/dist", {
+    extensions: ["html"],
+    setHeaders: (res, file) => {
+      if (file.endsWith(".html")) res.set("Cache-Control", "public, max-age=600");
+    },
+  }),
+);
+app.get("/app", (req, res) => res.sendFile(path.resolve("dist/index.html")));
+app.use(express.static("dist", { index: false }));
 // Passenger links get a real preview in WhatsApp, iMessage and SMS:
 // who is meeting them and where, so the link doesn't look like spam.
 const htmlEscape = (v = "") =>

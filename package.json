@@ -6,7 +6,7 @@
   "scripts": {
     "test": "node --test",
     "dev": "vite",
-    "build": "vite build",
+    "build": "vite build && node website/build.mjs",
     "start": "node --env-file-if-exists=.env server.js",
     "format": "prettier --write src lib server.js public/sw.js test vite.config.js index.html"
   },

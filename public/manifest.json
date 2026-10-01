@@ -2,7 +2,7 @@
   "name": "Arigreet",
   "short_name": "Arigreet",
   "description": "Set up a pickup, send a link, and find each other the moment they land.",
-  "start_url": "/",
+  "start_url": "/app",
   "scope": "/",
   "display": "standalone",
   "background_color": "#ffffff",
