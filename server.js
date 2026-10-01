@@ -10,6 +10,7 @@ import compression from "compression";
 import { OAuth2Client } from "google-auth-library";
 import { proximity } from "./lib/proximity.js";
 import { fetchFlight, flightUpdate } from "./lib/flights.js";
+import { ogPng } from "./lib/og.js";
 const app = express();
 const db = new DatabaseSync(process.env.DB_PATH || "arigreet.sqlite");
 db.exec(
@@ -1054,6 +1055,18 @@ app.use(
   }),
 );
 app.get("/app", (req, res) => res.sendFile(path.resolve("dist/index.html")));
+// Share images for airport pages, drawn on first request and cached.
+let ogData = null;
+app.get("/og/:slug.png", (req, res, next) => {
+  try {
+    ogData ||= JSON.parse(readFileSync(path.resolve("website/dist/og-data.json"), "utf8"));
+  } catch {
+    return next();
+  }
+  const d = ogData[req.params.slug];
+  if (!d) return next();
+  res.set("Cache-Control", "public, max-age=604800").type("png").send(ogPng(d));
+});
 app.use(express.static("dist", { index: false }));
 // Passenger links get a real preview in WhatsApp, iMessage and SMS:
 // who is meeting them and where, so the link doesn't look like spam.

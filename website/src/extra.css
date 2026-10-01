@@ -120,3 +120,22 @@
 .prose .toc { padding: 0; margin: 0; }
 .prose-block h2 + .prose-body { margin-top: 12px; }
 .aside-links { margin-top: 22px; font-size: 14px; line-height: 1.8; } .aside-links a { color: var(--ikb); }
+
+/* ── Photos ──────────────────────────── */
+.photo { margin: 0; border-radius: 28px; overflow: hidden; background: var(--paper); }
+.photo img, .plan-photo img, .hero-photo img, .page-photo img { display: block; width: 100%; height: 100%; object-fit: cover; }
+.hero-photo { position: relative; width: min(980px, 100%); margin-top: 34px; border-radius: 32px 32px 0 0; overflow: hidden; aspect-ratio: 3 / 2; max-height: 620px; box-shadow: 0 -20px 80px rgba(0, 0, 0, 0.3); }
+.hero-photo .notifs { position: absolute; right: clamp(12px, 3vw, 28px); bottom: clamp(12px, 3vw, 28px); width: min(330px, 70%); display: grid; gap: 8px; text-align: left; }
+.hero-photo .notif { backdrop-filter: blur(12px); background: rgba(255, 255, 255, 0.92); color: var(--ink); }
+@media (max-width: 560px) { .hero-photo { aspect-ratio: 4 / 5; } .hero-photo img { object-position: 30% 50%; } .hero-photo .notif:nth-child(-n+2) { display: none; } }
+.statement-grid { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.05fr); gap: clamp(28px, 5vw, 64px); align-items: center; }
+.statement-grid .photo { aspect-ratio: 4 / 3; }
+@media (max-width: 860px) { .statement-grid { grid-template-columns: 1fr; } }
+.story-photos { margin-top: 48px; display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+@media (max-width: 700px) { .story-photos { grid-template-columns: 1fr; } }
+.story-photos .photo { position: relative; aspect-ratio: 3 / 2; background: var(--ikb-deep); }
+.story-photos figcaption { position: absolute; left: 14px; bottom: 14px; padding: 9px 14px; border-radius: 999px; background: rgba(255, 255, 255, 0.92); color: var(--ink); font-size: 14.5px; font-weight: 600; }
+.plan-photo { margin: -30px -30px 6px; aspect-ratio: 16 / 10; overflow: hidden; border-radius: 30px 30px 0 0; }
+.page-hero-grid { display: grid; grid-template-columns: minmax(0, 1.1fr) minmax(0, 0.9fr); gap: clamp(28px, 5vw, 56px); align-items: center; }
+@media (max-width: 900px) { .page-hero-grid { grid-template-columns: 1fr; } }
+.page-photo { margin: 0; border-radius: 28px; overflow: hidden; aspect-ratio: 4 / 3; box-shadow: 0 24px 60px rgba(0, 10, 50, 0.35); }

@@ -13,26 +13,12 @@
         <a class="btn btn-ghost-w btn-lg" href="#board">Make a greeting board</a>
       </div>
       <p class="hero-note">Works at 7,884 airports · Passenger page in 7 languages</p>
-      <div class="stage" aria-hidden="true">
-        <div class="phone">
-          <div class="screen">
-            <span class="island"></span>
-            <div class="status"><span>9:41</span><span>●●● ▮</span></div>
-            <div class="lock-time">9:41</div>
-            <div class="lock-date">Friday 2 October</div>
-            <div class="notif">
-              <span class="ic" style="color:#fff"><svg><use href="#pin"/></svg></span>
-              <div><small><span>Arigreet</span><span>now</span></small><b>Helen has landed</b>A3 601 from London is on the ground at ATH.</div>
-            </div>
-            <div class="notif">
-              <span class="ic" style="color:#fff"><svg><use href="#pin"/></svg></span>
-              <div><small><span>Arigreet</span><span>now</span></small><b>Helen is collecting her bags</b>Take your time getting to Exit 3.</div>
-            </div>
-            <div class="notif">
-              <span class="ic" style="color:#fff"><svg><use href="#pin"/></svg></span>
-              <div><small><span>Arigreet</span><span>now</span></small><b>Helen is 40 m away</b>Open your GreetBoard so she spots you.</div>
-            </div>
-          </div>
+      <div class="hero-photo">
+        {{IMG:greeter-board|A driver at airport Arrivals holding up a phone showing the name Helen Smith on a Klein Blue greeting board|hero}}
+        <div class="notifs" aria-hidden="true">
+          <div class="notif"><span class="ic" style="color:#fff"><svg><use href="#pin"/></svg></span><div><small><span>Arigreet</span><span>now</span></small><b>Helen has landed</b>A3 601 from London is on the ground.</div></div>
+          <div class="notif"><span class="ic" style="color:#fff"><svg><use href="#pin"/></svg></span><div><small><span>Arigreet</span><span>now</span></small><b>Helen is collecting her bags</b>Take your time getting to Exit 3.</div></div>
+          <div class="notif"><span class="ic" style="color:#fff"><svg><use href="#pin"/></svg></span><div><small><span>Arigreet</span><span>now</span></small><b>Helen is 40 m away</b>Hold up your GreetBoard.</div></div>
         </div>
       </div>
     </div>
@@ -51,7 +37,8 @@
   </section>
 
   <section class="statement">
-    <div class="wrap">
+    <div class="wrap statement-grid">
+      <figure class="photo">{{IMG:barrier|Drivers at an arrivals barrier holding paper signs while one of them phones a passenger he can't find|wide}}</figure>
       <p>Arrivals is a crowd of people holding phones, all calling someone. <em>Arigreet turns your pickup into one link.</em> They tap when they land. You see them coming.</p>
     </div>
   </section>
@@ -98,6 +85,10 @@
     <div class="wrap">
       <h2 id="story-title" class="serif">How a pickup goes.</h2>
       <p class="story-lede">Five taps from wheels down to hello. Each one tells the other person exactly where things stand.</p>
+      <div class="story-photos">
+        <figure class="photo">{{IMG:landed|A passenger on a plane after landing, tapping I've landed on the Arigreet page|half}}<figcaption>Wheels down. One tap tells you.</figcaption></figure>
+        <figure class="photo">{{IMG:look-up|A woman hugging a friend at Arrivals, her phone still showing the Arigreet finding screen that says Look up|half}}<figcaption>Close up, the arrow says look up.</figcaption></figure>
+      </div>
       <ol class="steps" style="list-style:none;margin-top:56px;padding:0">
         <li class="step"><span class="n">1 · PASSENGER</span><span class="tap">I've landed</span><p>Your phone buzzes the moment the plane is on the ground.</p></li>
         <li class="step"><span class="n">2 · PASSENGER</span><span class="tap">Collecting my bags</span><p>You know to wait. No calls from the carousel.</p></li>
@@ -119,6 +110,7 @@
       <p class="who-lede">Anyone standing at Arrivals for someone else.</p>
       <div class="plans">
         <article class="plan">
+          <figure class="plan-photo">{{IMG:reunion|A mother walking out of Arrivals with open arms towards her son|card}}</figure>
           <span class="tag">Personal</span>
           <h3>Family &amp; friends</h3>
           <p>Picking up your mum, your partner or a friend you've never met in person.</p>
@@ -131,6 +123,7 @@
           <a class="btn btn-ikb" href="/app">Create a Greet</a>
         </article>
         <article class="plan dark">
+          <figure class="plan-photo">{{IMG:chauffeur|A chauffeur opening the car door for a smiling traveller outside the terminal at dusk|card}}</figure>
           <span class="tag">Business</span>
           <h3>Drivers, hotels &amp; transfers</h3>
           <p>Meet guests who don't speak your language and arrive tired, on time or three hours late.</p>
