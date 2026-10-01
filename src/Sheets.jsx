@@ -18,6 +18,7 @@ import {
   Bell,
   SquarePlus,
   Share as ShareIcon,
+  LocateFixed,
 } from "lucide-react";
 import QRCode from "qrcode";
 import { useApp, Sheet, first, Plate, Avatar, airportName, LIVE } from "./ui.jsx";
@@ -78,6 +79,11 @@ function Help({ close }) {
             {g.plate && <Plate>{g.plate}</Plate>}
           </div>
         </div>
+      )}
+      {a.positions.guest && a.positions.greeter && LIVE.includes(g.state) && (
+        <button className="btn lime" onClick={() => a.setModal("finder")}>
+          <LocateFixed size={19} /> {t("Find {peer}", { peer })}
+        </button>
       )}
       {g.allowCall && g.contact && (
         <a className="btn primary" href={"tel:" + g.contact}>

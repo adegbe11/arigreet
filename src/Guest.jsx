@@ -146,6 +146,7 @@ function ArrivalCard({ g }) {
         <button className="btn primary huge" onClick={go}>
           {t("I’M READY")}
         </button>
+        <small className="gs-note">{t("Shares your live location with {peer} until you meet.", { peer })}</small>
       </section>
     );
   if (g.state === "BAGGAGE_COLLECTION")
@@ -260,9 +261,9 @@ function Pickup({ g }) {
       {!a.offlinePickup && <Presence g={g} now={a.now} />}
       <ArrivalCard g={g} />
       {!a.offlinePickup && hasLanded(g) && (
-        <button className="btn ghost gs-help" onClick={() => a.setModal("help")}>
-          {t("I can’t find {peer}", { peer })}
-        </button>
+        <div className="gs-sos">
+          <button onClick={() => a.setModal("help")}>{t("I can’t find {peer}", { peer })}</button>
+        </div>
       )}
       <section className="gs-list">
         <div>

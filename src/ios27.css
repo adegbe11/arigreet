@@ -1515,3 +1515,114 @@
 .g-btn-web { width: 100%; min-height: 44px; display: flex; justify-content: center; }
 .g-or { display: flex; align-items: center; gap: 12px; margin: 6px 0; color: var(--ink-3, #687080); font-size: 14px; }
 .g-or::before, .g-or::after { content: ""; flex: 1; height: 1px; background: rgba(0, 0, 0, 0.12); }
+
+/* "I can't find …" — always one tap away once the passenger has landed */
+.gs-sos {
+  position: sticky;
+  bottom: 0;
+  z-index: 5;
+  margin-top: auto;
+  padding: 14px 0 calc(6px + env(safe-area-inset-bottom));
+  background: linear-gradient(to top, #fff 75%, rgba(255, 255, 255, 0));
+}
+.gs-sos button {
+  width: 100%;
+  min-height: 54px;
+  border-radius: 999px;
+  border: 2px solid var(--bad);
+  background: #fff;
+  color: var(--bad);
+  font-size: 17px;
+  font-weight: 700;
+}
+.gs-sos button:active { background: #fff1f1; }
+.gs-help, .lv-help { display: none; }
+
+.lv-find { width: 100%; }
+.lv-keep {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin: 0;
+  padding: 10px 14px;
+  border-radius: 14px;
+  background: var(--soft);
+  color: var(--ink-2);
+  font-size: 14px;
+  line-height: 1.35;
+}
+.lv-keep svg { flex-shrink: 0; color: var(--ikb); }
+
+/* Finder: Find-My-style arrow */
+.fd {
+  position: fixed;
+  inset: 0;
+  z-index: 60;
+  display: flex;
+  flex-direction: column;
+  padding: calc(14px + env(safe-area-inset-top)) 20px calc(18px + env(safe-area-inset-bottom));
+  background: #0b0d12;
+  color: #fff;
+  transition: background 0.4s ease;
+}
+.fd-aligned { background: #0a1f6b; }
+.fd-here { background: #002fa7; }
+.fd-top { display: flex; align-items: center; gap: 12px; }
+.fd-top div { flex: 1; display: grid; }
+.fd-top small { font-size: 13px; color: rgba(255, 255, 255, 0.6); }
+.fd-top b { font-size: 18px; }
+.fd-x {
+  width: 44px; height: 44px; border-radius: 50%;
+  display: grid; place-items: center;
+  background: rgba(255, 255, 255, 0.12); color: #fff; border: 0;
+}
+.fd-main {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  text-align: center;
+}
+.fd-arrow {
+  width: min(62vw, 300px);
+  height: min(62vw, 300px);
+  fill: #fff;
+  transition: transform 0.35s cubic-bezier(0.2, 0.8, 0.2, 1), fill 0.3s;
+  filter: drop-shadow(0 10px 30px rgba(0, 0, 0, 0.35));
+}
+.fd-aligned .fd-arrow { fill: var(--lime, #ccff00); }
+.fd-big {
+  margin: 12px 0 0;
+  font-size: clamp(64px, 22vw, 112px);
+  font-weight: 800;
+  letter-spacing: -0.04em;
+  line-height: 1;
+  font-variant-numeric: tabular-nums;
+}
+.fd-big span { font-size: 0.4em; letter-spacing: 0; color: rgba(255, 255, 255, 0.7); }
+.fd-side { margin: 0; font-size: 22px; font-weight: 600; color: rgba(255, 255, 255, 0.85); min-height: 30px; }
+.fd-wait { font-size: 20px; color: rgba(255, 255, 255, 0.75); }
+.fd-pulse {
+  width: 140px; height: 140px; border-radius: 50%;
+  background: var(--lime, #ccff00);
+  box-shadow: 0 0 0 0 rgba(204, 255, 0, 0.6);
+  animation: fd-ping 1.6s ease-out infinite;
+}
+@keyframes fd-ping {
+  0% { box-shadow: 0 0 0 0 rgba(204, 255, 0, 0.6); }
+  100% { box-shadow: 0 0 0 60px rgba(204, 255, 0, 0); }
+}
+.fd-foot { display: grid; gap: 12px; }
+.fd-note { margin: 0; text-align: center; font-size: 14px; color: rgba(255, 255, 255, 0.7); line-height: 1.4; }
+.fd-actions { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+.fd .btn.soft { background: rgba(255, 255, 255, 0.12); color: #fff; }
+@media (prefers-reduced-motion: reduce) {
+  .fd-arrow { transition: none; }
+  .fd-pulse { animation: none; }
+}
+.fd h2.fd-big { color: #fff; }
+.fd p.fd-side { color: rgba(255, 255, 255, 0.85); }
+.fd .fd-top b { color: #fff; }
+.fd-actions .btn { font-size: 15px; white-space: nowrap; padding-inline: 10px; }

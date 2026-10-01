@@ -8,7 +8,10 @@ import {
   Navigation,
   LocateOff,
   Signal,
+  LocateFixed,
+  Smartphone,
 } from "lucide-react";
+import { isNative } from "./native.js";
 import { useApp, first, Avatar } from "./ui.jsx";
 
 const LiveMap = lazy(() => import("./LiveMap.jsx"));
@@ -78,6 +81,18 @@ export default function Live() {
   const ago = them ? Math.max(1, Math.round((now - them.timestamp) / 60000)) : 0;
 
   const flash = () => a.run(() => a.action("flash"));
+  const canFind = !!(me && them);
+  const findBtn = (cls) =>
+    canFind && (
+      <button className={"btn lv-find " + cls} onClick={() => a.setModal("finder")}>
+        <LocateFixed size={20} /> {t("Find {peer}", { peer })}
+      </button>
+    );
+  const sos = isGuest && (
+    <div className="gs-sos">
+      <button onClick={() => a.setModal("help")}>{t("I can’t find {peer}", { peer })}</button>
+    </div>
+  );
   const see = () => a.setModal("confirm");
 
   /* Meeting confirmation waiting states (spec §42) */
@@ -178,12 +193,14 @@ export default function Live() {
         <button className="btn ink" onClick={see}>
           <Check size={19} strokeWidth={2.6} /> {t("I SEE {peer}", { peer: peer.toUpperCase() })}
         </button>
+        {findBtn("soft")}
         {isGuest && flashing && (
           <p className="lv-flashing" role="status">
             {t("Your greeter is flashing. Look for {beacon}", { beacon })} ●●●
           </p>
         )}
         {actions}
+        {sos}
       </section>
     );
 
@@ -239,6 +256,14 @@ export default function Live() {
           )}
         </div>
       </div>
+
+      {findBtn(nearby ? "primary" : "soft")}
+
+      {isGuest && sharing && !isNative && (
+        <p className="lv-keep">
+          <Smartphone size={15} /> {t("Keep this page open so {peer} can follow you to the exit.", { peer })}
+        </p>
+      )}
 
       {nearby && (
         <div className="lv-nearby">
@@ -314,11 +339,6 @@ export default function Live() {
         {atPoint ? t("You’re at {place}", { place: g.exit || g.area }) : t("I’m at {place}", { place: g.exit || g.area })}
       </button>
       <div className="lv-foot">
-        {isGuest && (
-          <button className="lv-help" onClick={() => a.setModal("help")}>
-            {t("I can’t find {peer}", { peer })}
-          </button>
-        )}
         {sharing ? (
           <button className="lv-stop" disabled={busy} onClick={a.stopSharing}>
             <i /> {t("Stop sharing")}
@@ -329,6 +349,7 @@ export default function Live() {
           </button>
         )}
       </div>
+      {sos}
     </section>
   );
 }

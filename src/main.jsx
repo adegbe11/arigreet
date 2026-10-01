@@ -11,6 +11,7 @@ import Guest from "./Guest.jsx";
 import Board from "./Board.jsx";
 import Sheets from "./Sheets.jsx";
 import Legal from "./Legal.jsx";
+import Finder from "./Finder.jsx";
 import { translate, pickLang } from "./i18n.js";
 import { isNative, platform, nativePushToken, nativeSetup, haptic } from "./native.js";
 import { AppCtx, ConnectionBanner, LIVE, ENDED, localDate, first } from "./ui.jsx";
@@ -255,7 +256,7 @@ export default function App() {
     };
   }, []);
   useEffect(() => {
-    const fast = LIVE_STATES.includes(g?.state) || modal === "board";
+    const fast = LIVE_STATES.includes(g?.state) || modal === "board" || modal === "finder";
     const t = setInterval(() => setNow(Date.now()), fast ? 1000 : 30000);
     return () => clearInterval(t);
   }, [g?.id, g?.state, modal]);
@@ -650,6 +651,26 @@ export default function App() {
       setModal(null);
       setGuestView("live");
     });
+  /* While location is shared, keep the screen on: phones stop GPS in a locked
+     browser tab, and the other person loses you on the map. */
+  useEffect(() => {
+    if (!sharing || !navigator.wakeLock) return;
+    let lock = null,
+      live = true;
+    const grab = () =>
+      document.visibilityState === "visible" &&
+      navigator.wakeLock
+        .request("screen")
+        .then((l) => (live ? (lock = l) : l.release?.()))
+        .catch(() => {});
+    grab();
+    document.addEventListener("visibilitychange", grab);
+    return () => {
+      live = false;
+      document.removeEventListener("visibilitychange", grab);
+      lock?.release?.();
+    };
+  }, [sharing]);
   const stopSharing = () =>
     run(async () => {
       stopLocal();
@@ -740,6 +761,7 @@ export default function App() {
             onSeeGuest={LIVE_STATES.includes(g.state) ? () => setModal("confirm") : undefined}
           />
         )}
+        {modal === "finder" && g && LIVE_STATES.includes(g.state) && <Finder onClose={() => setModal(null)} />}
         <Sheets />
       </div>
     </AppCtx.Provider>
