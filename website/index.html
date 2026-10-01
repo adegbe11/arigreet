@@ -1,0 +1,438 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Arigreet</title>
+<meta name="description" content="Meet anyone at Arrivals. Send one link, see when they land, find each other. No app for them.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght,SOFT,WONK@9..144,600..900,100,1&family=Geist:wght@400;500;600;700&display=swap">
+<style>
+/* Layout: one IKB stage up top, white editorial middle, IKB again for the story and the send-off.
+   Single-theme by choice: the brand is International Klein Blue on white in every viewer theme. */
+:root {
+  --ikb: #002fa7;
+  --ikb-deep: #00227a;
+  --ikb-ink: #001a5c;
+  --white: #ffffff;
+  --paper: #f6f7fb;
+  --ink: #0b1230;
+  --ink-2: #4a5170;
+  --line: #e3e6f0;
+  --display: "Fraunces", "Iowan Old Style", Georgia, serif;
+  --body: "Geist", "Helvetica Neue", Arial, sans-serif;
+  color-scheme: light;
+}
+* { box-sizing: border-box; }
+html { scroll-behavior: smooth; }
+body { margin: 0; background: var(--white); color: var(--ink); font: 400 17px/1.55 var(--body); -webkit-font-smoothing: antialiased; }
+a { color: inherit; }
+img, svg { max-width: 100%; }
+.wrap { width: min(1180px, 100%); margin: 0 auto; padding-inline: clamp(16px, 4vw, 40px); }
+.serif { font-family: var(--display); font-variation-settings: "SOFT" 100, "WONK" 1; font-weight: 900; letter-spacing: -0.035em; }
+h1, h2, h3 { margin: 0; text-wrap: balance; }
+p { margin: 0; }
+:focus-visible { outline: 3px solid #ffd400; outline-offset: 3px; border-radius: 6px; }
+
+/* ── Nav ─────────────────────────────── */
+.nav {
+  position: sticky; top: env(safe-area-inset-top, 0px); z-index: 20;
+  display: flex; justify-content: center; padding-block: 16px; pointer-events: none;
+}
+.nav-pill {
+  pointer-events: auto;
+  display: flex; align-items: center; gap: clamp(10px, 2.4vw, 28px);
+  padding: 8px 8px 8px 18px; border-radius: 999px;
+  background: rgba(255, 255, 255, 0.92); backdrop-filter: blur(14px);
+  box-shadow: 0 10px 30px rgba(0, 20, 80, 0.18);
+  color: var(--ink); max-width: calc(100% - 32px);
+}
+.logo { display: flex; align-items: center; gap: 8px; font-weight: 700; font-size: 18px; text-decoration: none; letter-spacing: -0.02em; }
+.logo svg { width: 18px; height: 24px; }
+.nav-links { display: flex; gap: 22px; font-size: 15px; font-weight: 500; }
+.nav-links a { text-decoration: none; color: var(--ink-2); }
+.nav-links a:hover { color: var(--ikb); }
+.btn {
+  display: inline-flex; align-items: center; justify-content: center; gap: 8px;
+  min-height: 44px; padding: 0 20px; border-radius: 999px; border: 0;
+  font: 600 15px/1 var(--body); text-decoration: none; cursor: pointer; white-space: nowrap;
+  transition: transform 0.2s ease, background 0.2s ease;
+}
+.btn:hover { transform: translateY(-1px); }
+.btn-ikb { background: var(--ikb); color: var(--white); }
+.btn-ikb:hover { background: var(--ikb-deep); }
+.btn-white { background: var(--white); color: var(--ikb); }
+.btn-lg { min-height: 56px; padding: 0 28px; font-size: 17px; }
+@media (max-width: 720px) { .nav-links { display: none; } }
+
+/* ── Hero ────────────────────────────── */
+.hero { background: var(--ikb); color: var(--white); margin-top: -76px; padding-top: 120px; overflow: hidden; position: relative; }
+.hero::before {
+  content: ""; position: absolute; inset: 0; pointer-events: none;
+  background: radial-gradient(60% 50% at 50% 0%, rgba(255, 255, 255, 0.14), transparent 70%);
+}
+.hero-inner { position: relative; display: grid; justify-items: center; text-align: center; gap: 22px; }
+.hero h1 { font-size: clamp(52px, 10.5vw, 132px); line-height: 0.92; }
+.hero h1 span { display: block; animation: rise 0.9s cubic-bezier(0.2, 0.8, 0.2, 1) both; }
+.hero h1 span + span { animation-delay: 0.12s; }
+.hero-sub { font-size: clamp(19px, 2.4vw, 26px); font-weight: 500; letter-spacing: -0.01em; display: flex; flex-wrap: wrap; justify-content: center; align-items: center; gap: 0 10px; }
+.rotor {
+  display: inline-grid; height: 1.5em; overflow: hidden; vertical-align: middle;
+  padding: 0 14px; border-radius: 999px; background: var(--white); color: var(--ikb); font-weight: 700;
+}
+.rotor-list { display: block; animation: rotor 10s cubic-bezier(0.7, 0, 0.3, 1) infinite; }
+.rotor-list span { display: block; height: 1.5em; line-height: 1.5em; }
+@keyframes rotor {
+  0%, 16% { transform: translateY(0); }
+  20%, 36% { transform: translateY(-1.5em); }
+  40%, 56% { transform: translateY(-3em); }
+  60%, 76% { transform: translateY(-4.5em); }
+  80%, 96% { transform: translateY(-6em); }
+  100% { transform: translateY(-7.5em); }
+}
+.hero-cta { display: flex; flex-wrap: wrap; gap: 12px; justify-content: center; margin-top: 6px; }
+.hero-note { font-size: 14px; opacity: 0.75; }
+
+/* Phone */
+.stage { position: relative; margin-top: 20px; display: flex; justify-content: center; }
+.phone {
+  width: min(330px, 82vw); aspect-ratio: 330 / 640; max-width: 100%;
+  border-radius: 52px 52px 0 0; padding: 14px 14px 0;
+  background: #0d0f16; box-shadow: 0 -20px 80px rgba(0, 0, 0, 0.35), inset 0 0 0 2px #2a2e3c;
+  transform: translateY(18%);
+}
+.screen {
+  height: 100%; border-radius: 40px 40px 0 0; overflow: hidden; position: relative;
+  background: linear-gradient(180deg, #e9edf8, #f8f9fc 60%); color: var(--ink);
+  display: flex; flex-direction: column; gap: 10px; padding: 14px 12px;
+}
+.status { display: flex; justify-content: space-between; align-items: center; font: 600 14px/1 var(--body); padding: 2px 14px 18px; }
+.island { width: 96px; height: 28px; border-radius: 20px; background: #0d0f16; position: absolute; left: 50%; top: 10px; transform: translateX(-50%); }
+.lock-time { text-align: center; font: 700 64px/1 var(--body); letter-spacing: -0.04em; color: var(--ikb-ink); margin: 4px 0 2px; }
+.lock-date { text-align: center; font-size: 14px; font-weight: 500; color: var(--ink-2); margin-bottom: 10px; }
+.notif {
+  display: grid; grid-template-columns: 38px 1fr; gap: 10px; align-items: start; text-align: left;
+  padding: 11px 12px; border-radius: 20px; background: rgba(255, 255, 255, 0.86);
+  box-shadow: 0 6px 24px rgba(0, 30, 100, 0.12); font-size: 13.5px; line-height: 1.35;
+  animation: drop 0.7s cubic-bezier(0.2, 0.9, 0.25, 1.15) both;
+}
+.notif:nth-of-type(2) { animation-delay: 1.1s; }
+.notif:nth-of-type(3) { animation-delay: 2.2s; }
+.notif .ic { width: 38px; height: 38px; border-radius: 10px; background: var(--ikb); display: grid; place-items: center; }
+.notif .ic svg { width: 14px; height: 19px; }
+.notif small { display: flex; justify-content: space-between; color: var(--ink-2); font-size: 11.5px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.04em; }
+.notif b { display: block; font-weight: 650; }
+@keyframes drop { from { opacity: 0; transform: translateY(-16px) scale(0.96); } }
+@keyframes rise { from { opacity: 0; transform: translateY(28px); } }
+
+/* ── Airports strip ──────────────────── */
+.airports { padding-block: 64px 24px; text-align: center; }
+.eyebrow { font-size: 13px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.12em; color: var(--ink-2); }
+.marquee { overflow: hidden; margin-top: 22px; -webkit-mask-image: linear-gradient(90deg, transparent, #000 10%, #000 90%, transparent); mask-image: linear-gradient(90deg, transparent, #000 10%, #000 90%, transparent); }
+.track { display: flex; gap: 12px; width: max-content; animation: slide 48s linear infinite; }
+.code { display: flex; align-items: baseline; gap: 8px; padding: 12px 18px; border-radius: 999px; border: 1px solid var(--line); white-space: nowrap; }
+.code b { font: 800 20px/1 var(--body); letter-spacing: 0.02em; color: var(--ikb); }
+.code span { font-size: 14px; color: var(--ink-2); }
+@keyframes slide { to { transform: translateX(-50%); } }
+
+/* ── Statement ───────────────────────── */
+.statement { padding-block: clamp(64px, 10vw, 120px); }
+.statement p { font-family: var(--display); font-variation-settings: "SOFT" 100, "WONK" 0; font-weight: 700; font-size: clamp(28px, 4.2vw, 50px); line-height: 1.12; letter-spacing: -0.025em; max-width: 22ch; }
+.statement p em { font-style: normal; color: var(--ikb); }
+
+/* ── Features ────────────────────────── */
+.features { padding-block: 0 clamp(72px, 10vw, 120px); }
+.feat-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 0; border-top: 1px solid var(--line); }
+.feat { padding: 28px 24px 32px 0; border-bottom: 1px solid var(--line); display: grid; gap: 10px; align-content: start; min-width: 0; }
+.feat svg { width: 28px; height: 28px; color: var(--ikb); }
+.feat h3 { font-size: 21px; font-weight: 650; letter-spacing: -0.02em; }
+.feat p { color: var(--ink-2); max-width: 40ch; }
+
+/* ── Story (IKB) ─────────────────────── */
+.story { background: var(--ikb); color: var(--white); padding-block: clamp(80px, 11vw, 140px); }
+.story h2 { font-size: clamp(56px, 11vw, 150px); line-height: 0.9; }
+.story-lede { margin-top: 24px; font-size: 19px; max-width: 46ch; opacity: 0.88; }
+.steps { margin-top: 56px; display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 14px; }
+.step {
+  border-radius: 26px; padding: 22px; min-width: 0;
+  background: rgba(255, 255, 255, 0.07); box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.16);
+  display: grid; gap: 14px; align-content: start;
+}
+.step .n { font: 800 13px/1 var(--body); letter-spacing: 0.14em; opacity: 0.7; }
+.tap {
+  justify-self: start; padding: 12px 16px; border-radius: 999px; background: var(--white); color: var(--ikb);
+  font: 800 14px/1 var(--body); letter-spacing: 0.04em; text-transform: uppercase;
+}
+.tap.ghost { background: transparent; color: var(--white); box-shadow: inset 0 0 0 2px rgba(255, 255, 255, 0.6); }
+.step p { font-size: 15.5px; opacity: 0.9; }
+.stats { margin-top: 64px; display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 24px; border-top: 1px solid rgba(255, 255, 255, 0.2); padding-top: 36px; }
+.stat b { display: block; font-family: var(--display); font-variation-settings: "SOFT" 100, "WONK" 1; font-weight: 900; font-size: clamp(56px, 7vw, 88px); line-height: 1; letter-spacing: -0.04em; font-variant-numeric: tabular-nums; }
+.stat span { display: block; margin-top: 8px; font-size: 13px; font-weight: 600; letter-spacing: 0.12em; text-transform: uppercase; opacity: 0.8; }
+
+/* ── Who it's for ────────────────────── */
+.who { padding-block: clamp(80px, 11vw, 130px); background: var(--paper); }
+.who h2, .faq h2 { font-size: clamp(40px, 6vw, 72px); line-height: 0.98; }
+.who-lede { margin-top: 14px; color: var(--ink-2); font-size: 19px; }
+.plans { margin-top: 44px; display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 16px; }
+.plan { background: var(--white); border-radius: 30px; padding: 30px; display: grid; gap: 18px; align-content: start; box-shadow: 0 1px 0 var(--line), 0 20px 50px rgba(0, 30, 100, 0.06); min-width: 0; }
+.plan.dark { background: var(--ikb); color: var(--white); }
+.plan .tag { font-size: 13px; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: var(--ikb); }
+.plan.dark .tag { color: rgba(255, 255, 255, 0.75); }
+.plan h3 { font-family: var(--display); font-variation-settings: "SOFT" 100, "WONK" 1; font-weight: 900; font-size: 40px; line-height: 1; letter-spacing: -0.03em; }
+.plan > p { color: var(--ink-2); }
+.plan.dark > p { color: rgba(255, 255, 255, 0.85); }
+.plan ul { list-style: none; margin: 0; padding: 18px 0 0; border-top: 1px solid var(--line); display: grid; gap: 12px; }
+.plan.dark ul { border-color: rgba(255, 255, 255, 0.2); }
+.plan li { display: grid; grid-template-columns: 20px 1fr; gap: 10px; font-weight: 500; }
+.plan li::before { content: ""; width: 18px; height: 18px; margin-top: 3px; border-radius: 50%; background: var(--ikb) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='white' stroke-width='3.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M5 12l5 5 9-10'/%3E%3C/svg%3E") center / 11px no-repeat; }
+.plan.dark li::before { background-color: var(--white); background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23002fa7' stroke-width='3.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M5 12l5 5 9-10'/%3E%3C/svg%3E"); }
+.plan .btn { justify-self: start; }
+
+/* ── FAQ ─────────────────────────────── */
+.faq { padding-block: clamp(80px, 11vw, 130px); }
+.faq-grid { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.4fr); gap: 48px; align-items: start; }
+@media (max-width: 860px) { .faq-grid { grid-template-columns: 1fr; gap: 28px; } }
+.faq-lede { margin-top: 14px; color: var(--ink-2); font-size: 18px; }
+.qa { border-bottom: 1px solid var(--line); }
+.qa summary { list-style: none; cursor: pointer; display: flex; justify-content: space-between; gap: 16px; align-items: center; padding: 22px 0; font-size: 19px; font-weight: 600; letter-spacing: -0.01em; }
+.qa summary::-webkit-details-marker { display: none; }
+.qa summary i { flex-shrink: 0; width: 32px; height: 32px; border-radius: 50%; background: var(--paper); position: relative; transition: transform 0.25s ease, background 0.25s ease; }
+.qa summary i::before, .qa summary i::after { content: ""; position: absolute; left: 50%; top: 50%; width: 12px; height: 2px; margin: -1px 0 0 -6px; background: var(--ikb); border-radius: 2px; }
+.qa summary i::after { transform: rotate(90deg); transition: transform 0.25s ease; }
+.qa[open] summary i { background: var(--ikb); }
+.qa[open] summary i::before, .qa[open] summary i::after { background: var(--white); }
+.qa[open] summary i::after { transform: rotate(0deg); }
+.qa p { padding: 0 48px 24px 0; color: var(--ink-2); max-width: 62ch; }
+
+/* ── Send-off ────────────────────────── */
+.sendoff { background: var(--ikb); color: var(--white); text-align: center; padding-block: clamp(90px, 12vw, 150px) 40px; }
+.sendoff h2 { font-size: clamp(56px, 12vw, 170px); line-height: 0.88; }
+.sendoff p { margin: 22px auto 30px; font-size: 19px; max-width: 40ch; opacity: 0.88; }
+.foot { margin-top: clamp(80px, 10vw, 120px); padding-top: 24px; border-top: 1px solid rgba(255, 255, 255, 0.2); display: flex; flex-wrap: wrap; justify-content: space-between; gap: 16px; font-size: 14px; opacity: 0.85; text-align: left; }
+.foot nav { display: flex; flex-wrap: wrap; gap: 20px; }
+.foot a { text-decoration: none; }
+.foot a:hover { text-decoration: underline; }
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { animation: none !important; transition: none !important; }
+  html { scroll-behavior: auto; }
+}
+</style>
+</head><body>
+
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <defs>
+    <symbol id="pin" viewBox="0 0 18 24"><path d="M9 0C4 0 0 4 0 9c0 6.6 7.6 14.1 8.3 14.7.4.4 1 .4 1.4 0C10.4 23.1 18 15.6 18 9c0-5-4-9-9-9zm0 12.6A3.6 3.6 0 1 1 9 5.4a3.6 3.6 0 0 1 0 7.2z" fill="currentColor"/></symbol>
+  </defs>
+</svg>
+
+<header class="nav">
+  <div class="nav-pill">
+    <a class="logo" href="#top" style="color: var(--ikb)"><svg><use href="#pin"/></svg><span style="color: var(--ink)">Arigreet</span></a>
+    <nav class="nav-links" aria-label="Main">
+      <a href="#how">How it works</a>
+      <a href="#who">For drivers</a>
+      <a href="#faq">Questions</a>
+    </nav>
+    <a class="btn btn-ikb" href="/app">Create a Greet</a>
+  </div>
+</header>
+
+<main id="top">
+  <section class="hero">
+    <div class="wrap hero-inner">
+      <h1 class="serif"><span>Stop circling.</span><span>Start greeting.</span></h1>
+      <p class="hero-sub">
+        <span>Meet your</span>
+        <span class="rotor" aria-hidden="true"><span class="rotor-list"><span>mum</span><span>client</span><span>hotel guest</span><span>best friend</span><span>new hire</span><span>mum</span></span></span>
+        <span class="sr-only" style="position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)">mum, client, hotel guest, best friend or new hire</span>
+        <span>at Arrivals, without the guessing.</span>
+      </p>
+      <div class="hero-cta">
+        <a class="btn btn-white btn-lg" href="/app">Create a Greet</a>
+      </div>
+      <p class="hero-note">Free to try. They open your link in their browser, with no app and no account.</p>
+      <div class="stage" aria-hidden="true">
+        <div class="phone">
+          <div class="screen">
+            <span class="island"></span>
+            <div class="status"><span>9:41</span><span>●●● ▮</span></div>
+            <div class="lock-time">9:41</div>
+            <div class="lock-date">Friday 2 October</div>
+            <div class="notif">
+              <span class="ic" style="color:#fff"><svg><use href="#pin"/></svg></span>
+              <div><small><span>Arigreet</span><span>now</span></small><b>Helen has landed</b>A3 601 from London is on the ground at ATH.</div>
+            </div>
+            <div class="notif">
+              <span class="ic" style="color:#fff"><svg><use href="#pin"/></svg></span>
+              <div><small><span>Arigreet</span><span>now</span></small><b>Helen is collecting her bags</b>Take your time getting to Exit 3.</div>
+            </div>
+            <div class="notif">
+              <span class="ic" style="color:#fff"><svg><use href="#pin"/></svg></span>
+              <div><small><span>Arigreet</span><span>now</span></small><b>Helen is 40 m away</b>Open your GreetBoard so she spots you.</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="airports" aria-label="Airports">
+    <div class="wrap">
+      <p class="eyebrow">Works at 7,800+ airports, every terminal</p>
+    </div>
+    <div class="marquee" aria-hidden="true">
+      <div class="track" id="track"></div>
+    </div>
+  </section>
+
+  <section class="statement">
+    <div class="wrap">
+      <p>Arrivals is a crowd of people holding phones, all calling someone. <em>Arigreet turns your pickup into one link.</em> They tap when they land. You see them coming.</p>
+    </div>
+  </section>
+
+  <section class="features" id="how" aria-labelledby="how-title">
+    <div class="wrap">
+      <h2 id="how-title" class="eyebrow" style="margin-bottom:18px">How it works</h2>
+      <div class="feat-grid">
+        <div class="feat">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.5.5l3-3a5 5 0 0 0-7-7l-1.7 1.7"/><path d="M14 11a5 5 0 0 0-7.5-.5l-3 3a5 5 0 0 0 7 7l1.7-1.7"/></svg>
+          <h3>One link, nothing to install</h3>
+          <p>Add their name and flight. Send the link on WhatsApp, Messages or email. It opens in any browser.</p>
+        </div>
+        <div class="feat">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 16l20-6-4-3-6 2-6-5-2 1 4 6-5 1-2-2-1 1z"/><path d="M3 21h18"/></svg>
+          <h3>They tap, you know</h3>
+          <p>I've landed. Collecting my bags. I'm ready. One button at a time, in their language.</p>
+        </div>
+        <div class="feat">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="3 11 22 2 13 21 11 13 3 11"/></svg>
+          <h3>A live map, then an arrow</h3>
+          <p>When they're ready you both see each other moving. Close up, one big arrow points the way with the distance in metres.</p>
+        </div>
+        <div class="feat">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="14" rx="2"/><path d="M8 21h8M12 18v3"/><path d="M7 11h10"/></svg>
+          <h3>Your phone becomes a name sign</h3>
+          <p>The GreetBoard fills your screen with their name. They can make it flash so they find you across the hall.</p>
+        </div>
+        <div class="feat">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="11" width="16" height="10" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></svg>
+          <h3>Private by design</h3>
+          <p>Location is shared only during the pickup, only with each other. It stops and is deleted the moment you meet.</p>
+        </div>
+        <div class="feat">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 1l22 22"/><path d="M16.7 11.1A11 11 0 0 1 19 12.6M5 12.6a11 11 0 0 1 5.2-2.5M10.7 5A16 16 0 0 1 22.6 9M1.4 9a16 16 0 0 1 4.4-2.8M8.5 16.1a6 6 0 0 1 7 0"/><circle cx="12" cy="20" r="1"/></svg>
+          <h3>Made for bad signal</h3>
+          <p>Taps made in a dead zone wait on the phone and send the second the signal comes back.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="story" aria-labelledby="story-title">
+    <div class="wrap">
+      <h2 id="story-title" class="serif">How a pickup goes.</h2>
+      <p class="story-lede">Five taps from wheels down to hello. Each one tells the other person exactly where things stand.</p>
+      <ol class="steps" style="list-style:none;margin-top:56px;padding:0">
+        <li class="step"><span class="n">1 · PASSENGER</span><span class="tap">I've landed</span><p>Your phone buzzes the moment the plane is on the ground.</p></li>
+        <li class="step"><span class="n">2 · PASSENGER</span><span class="tap">Collecting my bags</span><p>You know to wait. No calls from the carousel.</p></li>
+        <li class="step"><span class="n">3 · GREETER</span><span class="tap ghost">At Arrivals</span><p>They see you're there, at Exit 3, with their name.</p></li>
+        <li class="step"><span class="n">4 · PASSENGER</span><span class="tap">I'm ready</span><p>Live location turns on for both of you, map and arrow.</p></li>
+        <li class="step"><span class="n">5 · BOTH</span><span class="tap ghost">We met</span><p>Sharing stops. The link closes. Done.</p></li>
+      </ol>
+      <div class="stats">
+        <div class="stat"><b data-to="7884">7,884</b><span>Airports worldwide</span></div>
+        <div class="stat"><b data-to="7">7</b><span>Languages for passengers</span></div>
+        <div class="stat"><b>0</b><span>Apps they need to install</span></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="who" id="who" aria-labelledby="who-title">
+    <div class="wrap">
+      <h2 id="who-title" class="serif">Who it's for.</h2>
+      <p class="who-lede">Anyone standing at Arrivals for someone else.</p>
+      <div class="plans">
+        <article class="plan">
+          <span class="tag">Personal</span>
+          <h3>Family &amp; friends</h3>
+          <p>Picking up your mum, your partner or a friend you've never met in person.</p>
+          <ul>
+            <li>Unlimited Greets</li>
+            <li>Landed, bags and ready alerts</li>
+            <li>Live map and finding arrow</li>
+            <li>GreetBoard name sign</li>
+          </ul>
+          <a class="btn btn-ikb" href="/app">Create a Greet</a>
+        </article>
+        <article class="plan dark">
+          <span class="tag">Business</span>
+          <h3>Drivers, hotels &amp; transfers</h3>
+          <p>Meet guests who don't speak your language and arrive tired, on time or three hours late.</p>
+          <ul>
+            <li>Your company name and car on every pickup</li>
+            <li>Live flight times, delays and gates</li>
+            <li>Passenger pages in 7 languages</li>
+            <li>Several pickups a day, one dashboard</li>
+          </ul>
+          <a class="btn btn-white" href="mailto:hello@arigreet.com">Talk to us</a>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <section class="faq" id="faq" aria-labelledby="faq-title">
+    <div class="wrap faq-grid">
+      <div>
+        <h2 id="faq-title" class="serif">Questions.</h2>
+        <p class="faq-lede">Everything people ask before their first pickup.</p>
+      </div>
+      <div>
+        <details class="qa" open><summary>Does the person I'm meeting need the app?<i></i></summary><p>No. They tap your link and it opens in their phone's browser. No download, no account, no password.</p></details>
+        <details class="qa"><summary>What if they lose signal in baggage claim?<i></i></summary><p>Their taps wait on the phone and send as soon as signal comes back. Their pickup details stay saved, so they can still see where to meet you.</p></details>
+        <details class="qa"><summary>Who can see my location?<i></i></summary><p>Only the person you're meeting, and only after they tap I'm ready. Sharing stops and the location is deleted when you tap We met.</p></details>
+        <details class="qa"><summary>Which airports does it work at?<i></i></summary><p>7,884 airports, searchable by city, name or code, with terminals for the busiest ones.</p></details>
+        <details class="qa"><summary>What languages does the passenger see?<i></i></summary><p>English, Greek, French, Spanish, Italian, German and Portuguese. Their page picks their phone's language, and they can switch it.</p></details>
+        <details class="qa"><summary>How accurate is the finding arrow?<i></i></summary><p>A few metres outdoors. Inside terminals GPS is weaker, so the app says so, and the GreetBoard and the "I'm at Exit 3" button take over for the last steps.</p></details>
+      </div>
+    </div>
+  </section>
+
+  <section class="sendoff">
+    <div class="wrap">
+      <h2 class="serif">See you at Arrivals.</h2>
+      <p>Your next pickup takes one minute to set up.</p>
+      <a class="btn btn-white btn-lg" href="/app">Create a Greet</a>
+      <footer class="foot">
+        <span>© 2026 Arigreet · arigreet.com</span>
+        <nav aria-label="Legal">
+          <a href="/privacy">Privacy</a>
+          <a href="/terms">Terms</a>
+          <a href="mailto:hello@arigreet.com">hello@arigreet.com</a>
+        </nav>
+      </footer>
+    </div>
+  </section>
+</main>
+
+<script>
+  // Airport codes for the moving strip (doubled so the loop is seamless).
+  const codes = [["ATH","Athens"],["LHR","London"],["LOS","Lagos"],["JFK","New York"],["DXB","Dubai"],["CDG","Paris"],["FCO","Rome"],["MAD","Madrid"],["FRA","Frankfurt"],["LIS","Lisbon"],["IST","Istanbul"],["SKG","Thessaloniki"],["ABV","Abuja"],["SIN","Singapore"],["NBO","Nairobi"],["AMS","Amsterdam"],["JTR","Santorini"],["HND","Tokyo"],["YYZ","Toronto"],["ACC","Accra"]];
+  const track = document.getElementById("track");
+  track.innerHTML = [...codes, ...codes].map(([c, n]) => `<span class="code"><b>${c}</b><span>${n}</span></span>`).join("");
+  // Count the stats up once when they come into view; the final numbers are already in the page.
+  const fmt = (n) => n.toLocaleString("en-US");
+  if (!matchMedia("(prefers-reduced-motion: reduce)").matches && "IntersectionObserver" in window) {
+    const io = new IntersectionObserver((entries) => entries.forEach((e) => {
+      if (!e.isIntersecting) return;
+      io.unobserve(e.target);
+      const to = +e.target.dataset.to, t0 = performance.now();
+      const tick = (t) => {
+        const k = Math.min(1, (t - t0) / 1400), v = Math.round(to * (1 - Math.pow(1 - k, 3)));
+        e.target.textContent = fmt(v);
+        if (k < 1) requestAnimationFrame(tick);
+      };
+      requestAnimationFrame(tick);
+    }), { threshold: 0.6 });
+    document.querySelectorAll("[data-to]").forEach((el) => io.observe(el));
+  }
+</script>
+</body></html>
