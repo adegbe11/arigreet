@@ -1091,3 +1091,89 @@
 .join-sheet .join-form {
   margin-top: 0;
 }
+
+/* ── Welcome v5 (phone): the photo fills the screen, two doors in ──
+   Greeter: "I'm meeting someone". Passenger: "Someone is meeting me". */
+@media (max-width: 899px) {
+  .welcome-full .welcome-page.hero-layout {
+    background: #0b1220;
+  }
+  /* A wide photo on a tall phone: keep it in the top part so the name board
+     and his face both stay in frame, then fade into the dark ground. */
+  .welcome-full .welcome-hero {
+    inset: 0 0 auto;
+    top: 0;
+    height: 72%;
+    -webkit-mask-image: none;
+    mask-image: none;
+  }
+  .welcome-full .welcome-hero img {
+    object-position: 36% 30%;
+  }
+  /* Darken the bottom so white text reads on any photo */
+  .welcome-full .welcome-hero:after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background:
+      linear-gradient(180deg, rgba(5, 10, 25, 0.45) 0%, rgba(5, 10, 25, 0) 18%),
+      linear-gradient(0deg, #0b1220 0%, rgba(11, 18, 32, 0.85) 18%, rgba(11, 18, 32, 0) 50%);
+    pointer-events: none;
+  }
+  .welcome-full .welcome-header,
+  .welcome-full .welcome-header * {
+    color: #fff;
+  }
+  .welcome-full .welcome-bottom {
+    align-items: stretch;
+    text-align: left;
+    padding: 0 20px max(14px, env(safe-area-inset-bottom));
+  }
+  .welcome-full .welcome-bottom h1 {
+    color: #fff;
+    font-size: clamp(2.3rem, 1.6rem + 3.8vw, 2.9rem);
+  }
+  .welcome-full .welcome-bottom h1 em {
+    color: #d6ff3c;
+  }
+  .welcome-full .welcome-bottom > p {
+    color: rgba(255, 255, 255, 0.78);
+    max-width: 19rem;
+  }
+  .welcome-full .welcome-actions {
+    display: flex;
+    flex-direction: column;
+    padding-top: 26px;
+    gap: 10px;
+  }
+  .welcome-full .welcome-primary {
+    width: 100%;
+  }
+  .welcome-full .welcome-signin {
+    color: #fff;
+    opacity: 0.85;
+  }
+}
+.welcome-alt {
+  width: 100%;
+  min-height: 60px;
+  border: 0;
+  border-radius: 999px;
+  font: inherit;
+  font-size: 1.06rem;
+  font-weight: 650;
+  color: #fff;
+  background: transparent;
+  box-shadow: inset 0 0 0 1.5px rgba(255, 255, 255, 0.85);
+  cursor: pointer;
+}
+.welcome-alt:active {
+  background: rgba(255, 255, 255, 0.12);
+}
+@media (min-width: 900px) {
+  .welcome-alt {
+    color: var(--w-ikb, #002fa7);
+    background: rgba(0, 47, 167, 0.08);
+    box-shadow: none;
+  }
+}

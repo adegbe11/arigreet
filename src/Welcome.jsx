@@ -287,7 +287,7 @@ export function JoinForm({ active = true }) {
 
 /* First launch: splash, then one welcome screen. Get Started goes straight
    to Home, where Create Greet is the first thing they see. */
-export default function Welcome({ onStart, onSignIn, intro = "auto" }) {
+export default function Welcome({ onStart, onSignIn, onJoin, intro = "auto" }) {
   // Full splash plays on first launch (or when asked for); later launches
   // open straight onto the welcome screen, the way Apple recommends.
   const [phase, setPhase] = useState(() => {
@@ -318,7 +318,7 @@ export default function Welcome({ onStart, onSignIn, intro = "auto" }) {
   }, []);
   return (
     <section
-      className={"welcome-experience phase-" + phase}
+      className={"welcome-experience welcome-full phase-" + phase}
       aria-label="Welcome to Arigreet"
     >
       <div
@@ -346,18 +346,18 @@ export default function Welcome({ onStart, onSignIn, intro = "auto" }) {
                 at <em>Arrivals.</em>
               </span>
             </h1>
-            <p className="w-rise" style={{ "--d": 2 }}>
-              Set up a pickup, send a link, and find each other the moment they land.
-            </p>
             <div className="welcome-actions w-rise" style={{ "--d": 3 }}>
               <button
                 className="welcome-primary"
                 onClick={onStart}
               >
-                <span>Get Started</span>
+                <span>I’m meeting someone</span>
                 <i>
                   <ArrowRight size={20} />
                 </i>
+              </button>
+              <button className="welcome-alt" onClick={onJoin}>
+                Someone is meeting me
               </button>
               <button className="welcome-signin" onClick={onSignIn}>
                 Sign in

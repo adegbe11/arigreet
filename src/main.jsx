@@ -785,6 +785,10 @@ export default function App() {
               setWelcome(false);
               setModal("auth");
             }}
+            onJoin={() => {
+              setWelcome(false);
+              setModal("join");
+            }}
           />
         )}
         {flashPreview && <FlashPreview onClose={() => setFlashPreview(false)} />}
