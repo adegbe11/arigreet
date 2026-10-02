@@ -142,6 +142,12 @@ const safeImage = (v) =>
   /^(data:image\/(jpeg|png|webp);base64,|https:\/\/)/.test(String(v || ""))
     ? String(v).slice(0, 400000)
     : "";
+/* The passenger's link works for 7 days from now, and always until 2 days after
+   the arrival date, so a Greet set up weeks ahead never expires before the flight. */
+function linkExpiry(date, now = Date.now()) {
+  const arrival = Date.parse(`${date || ""}T23:59:59Z`);
+  return Math.max(now + 7 * 86400000, Number.isFinite(arrival) ? arrival + 2 * 86400000 : 0);
+}
 function greetFields(body = {}) {
   const out = {};
   for (const k of GREET_FIELDS) {
@@ -609,7 +615,7 @@ app.post("/api/greets", (req, res) => {
     token: key(),
     state: "CREATED",
     created: Date.now(),
-    expires: Date.now() + 7 * 86400000,
+    expires: linkExpiry(req.body.date),
     locations: {},
     confirmations: [],
     timeline: [{ state: "CREATED", at: Date.now() }],
@@ -749,6 +755,7 @@ app.post("/api/greets/:id/action", (req, res) => {
     if (!value?.name?.trim())
       return res.status(400).json({ error: "Passenger name is required." });
     Object.assign(g, greetFields(value));
+    g.expires = Math.max(g.expires || 0, linkExpiry(g.date));
   } else if (action === "location") {
     if (
       ![
@@ -831,7 +838,7 @@ app.post("/api/greets/:id/action", (req, res) => {
     if (!["LANDED", "BAGGAGE_COLLECTION", ...LIVE_STATES].includes(g.state))
       return res.status(409).json({ error: "Tap I've landed first." });
     if (Date.now() - (g.helpAt || 0) < 15000)
-      return res.status(429).json({ error: "Michael has been told. Give it a few seconds." });
+      return res.status(429).json({ error: `${first(g.greeter)} has been told. Give it a few seconds.` });
     g.helpAt = Date.now();
     g.flashAt = Date.now();
   } else if (action === "confirm") {

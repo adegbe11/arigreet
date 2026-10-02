@@ -285,7 +285,7 @@ function Pickup({ g }) {
           <Plane size={20} />
           <span>
             <small>{t("Flight")}</small>
-            <b>{[g.flight || t("Arrival"), airportName(g.airport)].filter(Boolean).join(" · ")}</b>
+            <b>{g.flight ? [g.flight, airportName(g.airport)].filter(Boolean).join(" · ") : t("{city} Airport", { city: airportName(g.airport) })}</b>
             <p>
               {[day(g.date, a), g.time, g.terminal].filter(Boolean).join(" · ")}
               {delayed && (

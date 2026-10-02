@@ -104,7 +104,7 @@ function FirstRun({ onCreate }) {
         <PlaneLanding size={28} />
       </span>
       <h2 id="first-title">Who’s landing?</h2>
-      <p>Add their flight and we’ll give you one link to send them.</p>
+      <p>Add when they land and we’ll give you one link to send them.</p>
       <button className="btn primary gr-create" onClick={onCreate}>
         Create Greet
       </button>
@@ -427,7 +427,7 @@ function ProfileTab() {
           <ul className="pf-points">
             <li>Location is shared only during a Live Greet, and only with the other person.</li>
             <li>Sharing stops when you meet, end sharing, or the Greet ends.</li>
-            <li>Guests never need an account. Their link expires after 7 days.</li>
+            <li>Guests never need an account. Their link stops working 2 days after the arrival date.</li>
             <li>What your guest adds to help you recognize them is visible only to you, during that Greet.</li>
             <li>Finished Greets are deleted automatically after 30 days.</li>
           </ul>
@@ -675,7 +675,7 @@ function Detail() {
           <Plane size={20} />
           <span>
             <small>Flight</small>
-            <b>{[g.flight || "No flight", airportName(g.airport) + (airportCode(g.airport) ? " " + airportCode(g.airport) : "")].join(" · ")}</b>
+            <b>{[g.flight, airportName(g.airport) + (airportCode(g.airport) ? " " + airportCode(g.airport) : "")].filter(Boolean).join(" · ")}</b>
             <p>
               Arrival {g.time} · {dayLabel(g.date)}
               {g.terminal ? ` · ${g.terminal}` : ""}

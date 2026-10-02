@@ -27,6 +27,7 @@ import { BeaconStars } from "./HomeView.jsx";
 import "./create.css";
 import AirportPicker from "./AirportPicker.jsx";
 import { TERMINALS } from "./terminals.js";
+import { dayLabel } from "./ui.jsx";
 
 /* Spec §9–19: Who → Arrival → Meeting point → Who to look for → Vehicle →
    Anything else → GreetBoard → Review → (Save your Greet) → Created → Share. */
@@ -304,7 +305,7 @@ function Summary({ form, onEdit }) {
     [User, form.name, [form.phone, form.email].filter(Boolean).join(" · "), "who"],
     [
       Plane,
-      [form.flight || "No flight", form.airport].filter(Boolean).join(" · "),
+      [form.flight, form.airport].filter(Boolean).join(" · "),
       [
         form.date &&
           new Date(form.date + "T12:00").toLocaleDateString("en-GB", {
@@ -466,7 +467,7 @@ export default function CreateFlow({
       if (editing) return onViewGreet(g);
       setGreet(g);
       setMessage(
-        `Hi ${first(g.name)}, it's ${first(g.greeter) || "me"}. I'm meeting you at ${(g.airport || "the airport").replace(/\s*\(.*\)/, "")} Airport. Save this link and open it when you land, so we find each other fast. No app needed.`,
+        `Hi ${first(g.name)}, it's ${first(g.greeter) || "me"}. I'm meeting you at ${g.airport ? g.airport.replace(/\s*\(.*\)/, "") + " Airport" : "the airport"}${[g.area, g.exit].filter(Boolean).length ? ", " + [g.area, g.exit].filter(Boolean).join(", ") : ""}. Open this link now so it's saved on your phone, then open it again when you land. No app needed.`,
       );
       setPhase("created");
     } catch (e) {
@@ -658,7 +659,7 @@ export default function CreateFlow({
               )}
               <span>
                 <small>{guest} will see</small>
-                <b>{form.greeter || "Your name"} is waiting for you</b>
+                <b>{form.greeter || "Your name"} is meeting you</b>
                 {form.company && <small>{form.company}</small>}
               </span>
             </div>
@@ -791,7 +792,7 @@ export default function CreateFlow({
             <Field
               label="Additional note"
               textarea
-              placeholder="Anything the driver should know"
+              placeholder="Anything else about the pickup"
               value={form.notes}
               onChange={(e) => set("notes", e.target.value)}
             />
@@ -1100,11 +1101,7 @@ export default function CreateFlow({
               </span>
               <span>
                 {[
-                  greet.date &&
-                    new Date(greet.date + "T12:00").toLocaleDateString(
-                      "en-GB",
-                      { weekday: "long" },
-                    ),
+                  dayLabel(greet.date),
                   greet.time,
                 ]
                   .filter(Boolean)
@@ -1151,7 +1148,7 @@ export default function CreateFlow({
             <label className="cf-field">
               <span>Message</span>
               <textarea
-                rows={4}
+                rows={5}
                 value={message}
                 onChange={(e) => setMessage(e.target.value)}
               />

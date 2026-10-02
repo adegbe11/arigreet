@@ -61,13 +61,17 @@ function Help({ close }) {
   return (
     <Sheet title={sent ? t("{peer} has been told", { peer }) : t("Telling {peer}…", { peer })} onClose={close}>
       <p className="sh-lede">
-        {t("{peer}’s GreetBoard is lighting up now. Stay where you are, look around, and look for your name.", { peer })}
+        {t("{peer} has been told. Stay where you are and look for your name on their phone.", { peer })}
       </p>
       <div className="sh-point">
         {photo ? <img className="sh-face" src={photo} alt={g.greeter} /> : <MapPin size={22} />}
         <div>
           <b>{g.greeter}</b>
-          <span>{t("Waiting at {place}", { place: [g.area, g.exit].filter(Boolean).join(" · ") || t("Arrivals") })}</span>
+          <span>
+            {t(g.greeterStatus?.code === "AT_ARRIVALS" ? "Waiting at {place}" : "Meet at {place}", {
+              place: [g.area, g.exit].filter(Boolean).join(" · ") || t("Arrivals"),
+            })}
+          </span>
           {g.landmark && <span>{g.landmark}</span>}
         </div>
       </div>
@@ -417,7 +421,7 @@ function Share({ close }) {
   const n = first(g.name);
   const link = SITE + "/g/" + g.token;
   const [message, setMessage] = useState(
-    `Hi ${n}, it's ${first(g.greeter) || "me"}. I'm meeting you at ${airportName(g.airport) || "the"} Airport. Save this link and open it when you land, so we find each other fast. No app needed.`,
+    `Hi ${n}, it's ${first(g.greeter) || "me"}. I'm meeting you at ${airportName(g.airport) ? airportName(g.airport) + " Airport" : "the airport"}${[g.area, g.exit].filter(Boolean).length ? ", " + [g.area, g.exit].filter(Boolean).join(", ") : ""}. Open this link now so it's saved on your phone, then open it again when you land. No app needed.`,
   );
   const [qr, setQr] = useState("");
   const [copied, setCopied] = useState(false);
@@ -436,7 +440,7 @@ function Share({ close }) {
   return (
     <Sheet title={`Send to ${n}`} onClose={close}>
       <p className="sh-lede">{n} opens it without an app or account.</p>
-      <label className="fld"><span>Message</span><textarea rows={3} value={message} onChange={(e) => setMessage(e.target.value)} /></label>
+      <label className="fld"><span>Message</span><textarea rows={5} value={message} onChange={(e) => setMessage(e.target.value)} /></label>
       <div className="sh-link-box">
         <span>{link.replace(/^https?:\/\//, "")}</span>
         <button onClick={() => copy(link)} aria-label="Copy link">{copied ? <Check size={18} /> : <Copy size={18} />}</button>

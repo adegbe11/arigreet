@@ -229,7 +229,7 @@ export function JoinForm({ active = true }) {
                 setValue(e.target.value);
                 setError("");
               }}
-              placeholder="arigreet.com/g/…"
+              placeholder="app.arigreet.com/g/…"
               autoComplete="off"
               autoCapitalize="none"
               spellCheck="false"
@@ -360,7 +360,7 @@ export default function Welcome({ onStart, onSignIn, intro = "auto" }) {
                 </i>
               </button>
               <button className="welcome-signin" onClick={onSignIn}>
-                Sign In
+                Sign in
               </button>
             </div>
           </div>
