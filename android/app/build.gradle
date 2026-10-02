@@ -8,10 +8,10 @@ android {
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
         // CI sets these from the build number; local builds stay at 1 / 1.0.
-        versionCode (System.getenv("ARIGREET_VERSION_CODE") ?: "1").toInteger()
-        versionName System.getenv("ARIGREET_VERSION_NAME") ?: "1.0"
+        versionCode = Integer.parseInt(System.getenv("ARIGREET_VERSION_CODE") ?: "1")
+        versionName = System.getenv("ARIGREET_VERSION_NAME") ?: "1.0"
         // Pickup links on this address open the app (Android App Links).
-        def site = (System.getenv("ARIGREET_URL") ?: "https://arigreet.onrender.com").replaceAll("^https?://", "").replaceAll("/.*\$", "")
+        def site = (System.getenv("ARIGREET_URL") ?: "https://app.arigreet.com").replaceAll("^https?://", "").replaceAll("/.*\$", "")
         manifestPlaceholders = [arigreetHost: site]
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         aaptOptions {

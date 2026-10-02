@@ -5,7 +5,7 @@
 import { writeFileSync } from "node:fs";
 const url = (process.env.ARIGREET_URL || "").replace(/\/$/, "");
 if (!url) {
-  console.log("ARIGREET_URL not set; the app will use https://arigreet.onrender.com");
+  console.log("ARIGREET_URL not set; the app will use https://app.arigreet.com");
   process.exit(0);
 }
 if (!/^https:\/\/[^/]+$/.test(url)) throw Error("ARIGREET_URL must look like https://arigreet.com");

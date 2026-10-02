@@ -7,7 +7,7 @@ export const isNative = Capacitor.isNativePlatform();
 export const platform = Capacitor.getPlatform(); // "android" | "ios" | "web"
 
 /* Where the app sends data. Set at build time with ARIGREET_URL (scripts/cap-url.mjs). */
-export const API_BASE = isNative ? (import.meta.env.VITE_API_URL || "https://arigreet.onrender.com").replace(/\/$/, "") : "";
+export const API_BASE = isNative ? (import.meta.env.VITE_API_URL || "https://app.arigreet.com").replace(/\/$/, "") : "";
 /* The public address used in links you send (https://arigreet.com/g/…). */
 export const SITE = isNative ? API_BASE : location.origin;
 
