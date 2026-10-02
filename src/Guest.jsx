@@ -108,7 +108,7 @@ function Invitation({ g, onView }) {
       <GuestHeader />
       <div className="gs-invite-body">
         <Avatar name={g.greeter} src={a.pickupPhoto(g, "greeter")} size={96} />
-        <h1>{t("{peer} is waiting for you.", { peer: first(g.greeter) })}</h1>
+        <h1>{t("{peer} is meeting you.", { peer: first(g.greeter) })}</h1>
         <div className="gs-invite-meta">
           <b>{t("{city} Airport", { city: airportName(g.airport) })}</b>
           <span>
@@ -144,7 +144,7 @@ function ArrivalCard({ g }) {
         <h2>{t("Ready to meet {peer}?", { peer })}</h2>
         <p>{t("When you tap I’m Ready, Arigreet can help you find each other.")}</p>
         <button className="btn primary huge" onClick={go}>
-          {t("I’M READY")}
+          {t("I’m ready")}
         </button>
         <small className="gs-note">{t("Shares your live location with {peer} until you meet.", { peer })}</small>
       </section>
@@ -158,7 +158,7 @@ function ArrivalCard({ g }) {
         <h2>{t("Take your time.")}</h2>
         <p>{t("{peer} knows you’re collecting your bags.", { peer })}</p>
         <button className="btn primary" onClick={() => setReady(true)}>
-          {t("I HAVE MY BAGS")}
+          {t("I have my bags")}
         </button>
       </section>
     );
@@ -169,7 +169,7 @@ function ArrivalCard({ g }) {
         <h2>{beforeArrival(g, a.now) ? t("{peer} is meeting you.", { peer }) : t("Landed in {city}?", { city })}</h2>
         <p>{t("Tap when your plane is on the ground. {peer} will know right away.", { peer })}</p>
         <button className="btn primary huge" disabled={a.busy} onClick={() => a.run(() => a.action("state", "LANDED"))}>
-          {t("I’VE LANDED")}
+          {t("I’ve landed")}
         </button>
         <small className="gs-note">{t("Nothing else is shared until you tap I’m Ready.")}</small>
       </section>
@@ -179,20 +179,16 @@ function ArrivalCard({ g }) {
       {hasLanded(g) && (
         <p className="gs-welcome">
           {t("Welcome to {city}, {guest}.", { city, guest })}
-          <br />
-          <span>{t("{peer} is waiting for you.", { peer })}</span>
         </p>
       )}
       <h2>{t("Have you collected your bags?")}</h2>
+      <p>{t("No checked bags? Tap Yes.")}</p>
       <div className="gs-stack">
         <button className="btn primary" onClick={() => setReady(true)}>
-          {t("YES, I HAVE MY BAGS")}
+          {t("Yes, I have my bags")}
         </button>
         <button className="btn ghost" disabled={a.busy} onClick={() => a.run(() => a.action("state", "BAGGAGE_COLLECTION"))}>
-          {t("NOT YET")}
-        </button>
-        <button className="gs-link center" onClick={() => setReady(true)}>
-          {t("I don’t have checked bags")}
+          {t("Still waiting for bags")}
         </button>
       </div>
     </section>
@@ -204,22 +200,22 @@ function Presence({ g, now }) {
   const { t } = useApp();
   const peer = first(g.greeter);
   const st = g.greeterStatus;
-  const [text, tone] = !st
-    ? [t("{peer} will let you know when they’re on the way.", { peer }), "idle"]
-    : {
+  if (!st) return null; // nothing said yet: the card below already says who is meeting you
+  const [text, tone] = {
         ON_MY_WAY: [t("{peer} is on the way to the airport", { peer }), "go"],
         LATE_10: [t("{peer} is running about {n} minutes late", { peer, n: 10 }), "late"],
         LATE_20: [t("{peer} is running about {n} minutes late", { peer, n: 20 }), "late"],
         LATE_30: [t("{peer} is running about {n} minutes late", { peer, n: 30 }), "late"],
         AT_ARRIVALS: [t("{peer} is at Arrivals with your name", { peer }), "here"],
       }[st.code] || ["", "idle"];
-  const mins = st ? Math.max(0, Math.round((now - st.at) / 60000)) : 0;
+  if (!text) return null;
+  const mins = Math.max(0, Math.round((now - st.at) / 60000));
   return (
     <div className={"gs-presence " + tone} role="status">
       <i />
       <span>
         <b>{text}</b>
-        {st && <small>{mins < 1 ? t("Just now") : t("{n} min ago", { n: mins })}</small>}
+        <small>{mins < 1 ? t("Just now") : t("{n} min ago", { n: mins })}</small>
       </span>
     </div>
   );

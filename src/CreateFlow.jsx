@@ -1,5 +1,5 @@
 import { SITE } from "./native.js";
-import GoogleButton, { Or } from "./GoogleButton.jsx";
+import GoogleButton from "./GoogleButton.jsx";
 import React, { useEffect, useRef, useState } from "react";
 import {
   X,
@@ -15,7 +15,6 @@ import {
   Share2,
   Minus,
   Plus,
-  Pencil,
   Plane,
   MapPin,
   User,
@@ -288,7 +287,7 @@ export function GreetBoardPreview({ form, small }) {
         <img className="cf-board-logo" src={form.companyLogo} alt="" />
       )}
       <BeaconStars />
-      <div className="cf-board-name">
+      <div className="cf-board-name" style={{ "--len": Math.max(4, ...name.map((w) => w.length)) }}>
         {name.map((w, i) => (
           <span key={i}>{w}</span>
         ))}
@@ -300,9 +299,9 @@ export function GreetBoardPreview({ form, small }) {
   );
 }
 
-function Summary({ form }) {
+function Summary({ form, onEdit }) {
   const rows = [
-    [User, form.name, [form.phone, form.email].filter(Boolean).join(" · ")],
+    [User, form.name, [form.phone, form.email].filter(Boolean).join(" · "), "who"],
     [
       Plane,
       [form.flight || "No flight", form.airport].filter(Boolean).join(" · "),
@@ -318,29 +317,33 @@ function Summary({ form }) {
       ]
         .filter(Boolean)
         .join(" · "),
+      "arrival",
     ],
     [
       MapPin,
       [form.area, form.exit].filter(Boolean).join(" · "),
       form.landmark || form.instructions,
+      "meet",
     ],
-    form.greeter && [User, form.greeter, form.company],
+    form.greeter && [User, form.greeter, form.company, "greeter"],
     form.vehicle && [
       Car,
       [form.colour, form.vehicle].filter(Boolean).join(" "),
       form.plate,
+      "vehicle",
     ],
   ].filter(Boolean);
   return (
     <div className="cf-summary">
-      {rows.map(([Icon, a, b], i) => (
-        <div key={i}>
+      {rows.map(([Icon, a, b, to], i) => (
+        <button type="button" key={i} onClick={() => onEdit(to)} aria-label={`Edit ${a}`}>
           <Icon size={18} />
           <span>
             <b>{a}</b>
             {b && <small>{b}</small>}
           </span>
-        </div>
+          <ChevronRight size={18} className="cf-sum-go" />
+        </button>
       ))}
     </div>
   );
@@ -369,7 +372,6 @@ export default function CreateFlow({
   const [dir, setDir] = useState(1);
   const [phase, setPhase] = useState("steps"); // steps | save | created | share
   const [more, setMore] = useState(!!(form.phone || form.email || form.photo));
-  const [noFlight, setNoFlight] = useState(false);
   const [authMode, setAuthMode] = useState(null); // null | register | login
   const [auth, setAuth] = useState({ name: "", email: "", password: "" });
   const [busy, setBusy] = useState(false);
@@ -450,7 +452,7 @@ export default function CreateFlow({
     ...form,
     beacon: BOARD_STYLES[form.theme]?.beacon || "Klein Blue",
     allowCall: !!form.contact,
-    flight: noFlight ? "" : (form.flight || "").toUpperCase().trim(),
+    flight: (form.flight || "").toUpperCase().trim(),
     plate: (form.plate || "").toUpperCase().trim(),
   });
   const submit = async (token) => {
@@ -557,17 +559,15 @@ export default function CreateFlow({
         return (
           <>
             <h1>When are they arriving?</h1>
-            {!noFlight && (
-              <Field
-                label="Flight number"
-                className="cf-caps"
-                placeholder="A3 123"
-                value={form.flight}
-                autoCapitalize="characters"
-                onChange={(e) => set("flight", e.target.value)}
-                hint="Flight updates switch on after you create the Greet, when available."
-              />
-            )}
+            <Field
+              label="Flight number"
+              optional
+              className="cf-caps"
+              placeholder="A3 123"
+              value={form.flight}
+              autoCapitalize="characters"
+              onChange={(e) => set("flight", e.target.value)}
+            />
             <div className="cf-row">
               <Field
                 label="Arrival date"
@@ -600,15 +600,6 @@ export default function CreateFlow({
               </button>
             </div>
             <TerminalField code={form.airportCode} value={form.terminal} onChange={(v) => set("terminal", v)} />
-            <button
-              type="button"
-              className="cf-text"
-              onClick={() => setNoFlight(!noFlight)}
-            >
-              {noFlight
-                ? "Add a flight number"
-                : "No flight? Enter details manually"}
-            </button>
           </>
         );
       case "meet":
@@ -650,12 +641,6 @@ export default function CreateFlow({
               value={form.instructions}
               onChange={(e) => set("instructions", e.target.value)}
             />
-            {(form.area || form.exit) && (
-              <div className="cf-pill">
-                <MapPin size={16} />{" "}
-                {[form.area, form.exit].filter(Boolean).join(" · ")}
-              </div>
-            )}
           </>
         );
       case "greeter":
@@ -853,7 +838,7 @@ export default function CreateFlow({
               ]}
             />
             <div className="cf-group">
-              {form.flight && !noFlight && (
+              {form.flight && (
                 <Toggle
                   label="Show flight number"
                   checked={form.boardShowFlight}
@@ -876,7 +861,7 @@ export default function CreateFlow({
             <h1>
               {editing ? "Save your changes?" : `Ready to meet ${guest}?`}
             </h1>
-            <Summary form={finalForm()} />
+            <Summary form={finalForm()} onEdit={(to) => go(STEPS.indexOf(to))} />
             <div className="cf-more-group">
               <h2>Add more · optional</h2>
               {Object.entries(OPTIONAL).map(([key, label]) => {
@@ -911,9 +896,6 @@ export default function CreateFlow({
           <>
             <button className="cf-primary" disabled={busy} onClick={create}>
               {busy ? "Saving…" : editing ? "Save changes" : "Create Greet"}
-            </button>
-            <button className="cf-secondary" onClick={() => go(0)}>
-              <Pencil size={16} /> Edit details
             </button>
           </>
         );
@@ -982,7 +964,7 @@ export default function CreateFlow({
             ))}
           </div>
           <span className="cf-count">
-            {phase === "save" ? "Last step" : isOptional(step) ? "Optional" : `${mainIndex + 1} of ${MAIN.length}`}
+            {phase === "save" ? "" : isOptional(step) ? "Optional" : `${mainIndex + 1} of ${MAIN.length}`}
           </span>
         </header>
       )}

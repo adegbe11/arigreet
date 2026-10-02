@@ -22,9 +22,11 @@ function useFit(lines, box) {
     if (!el) return;
     const ctx = document.createElement("canvas").getContext("2d");
     const fit = () => {
-      ctx.font = FONT;
-      const widest = Math.max(...lines.map((l) => ctx.measureText(l).width), 1);
-      const w = el.clientWidth * 0.94;
+      // Measure with the font the board actually draws in, including its tight letter-spacing.
+      const fam = getComputedStyle(el.querySelector(".gb-name") || el).fontFamily;
+      ctx.font = fam ? `900 100px ${fam}` : FONT;
+      const widest = Math.max(...lines.map((l) => ctx.measureText(l).width - 5 * (l.length - 1)), 1);
+      const w = el.clientWidth * 0.9;
       const h = el.clientHeight;
       const byWidth = (100 * w) / widest;
       const byHeight = h / (lines.length * 0.92);

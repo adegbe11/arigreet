@@ -1190,8 +1190,9 @@
   min-height: 48px;
   padding: 4px 6px;
   border-radius: 16px;
-  font-size: 15px;
+  font-size: 14px;
   font-weight: 600;
+  white-space: nowrap;
   color: var(--ink);
   background: #fff;
   box-shadow: 0 0 0 0.5px var(--hairline);
@@ -1527,15 +1528,15 @@
 }
 .gs-sos button {
   width: 100%;
-  min-height: 54px;
+  min-height: 48px;
   border-radius: 999px;
-  border: 2px solid var(--bad);
-  background: #fff;
+  border: 0;
+  background: rgba(214, 48, 49, 0.08);
   color: var(--bad);
-  font-size: 17px;
-  font-weight: 700;
+  font-size: 16px;
+  font-weight: 600;
 }
-.gs-sos button:active { background: #fff1f1; }
+.gs-sos button:active { background: rgba(214, 48, 49, 0.16); }
 .gs-help, .lv-help { display: none; }
 
 .lv-find { width: 100%; }

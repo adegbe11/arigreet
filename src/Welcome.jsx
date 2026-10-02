@@ -116,7 +116,7 @@ function Splash({ targetRef, onHandoff, onDone }) {
       className={"splash " + (leaving ? "is-leaving" : "")}
       onClick={finish}
       role="img"
-      aria-label="Arigreet. From arrival to hello."
+      aria-label="Arigreet. Find each other at Arrivals."
     >
       <div className="splash-stage">
         <div className="splash-mark">
@@ -128,7 +128,7 @@ function Splash({ targetRef, onHandoff, onDone }) {
           </div>
         </div>
         <Wordmark className="splash-word" split />
-        <p className="splash-tag">From arrival to hello.</p>
+        <p className="splash-tag">Find each other at Arrivals.</p>
       </div>
       <span className="splash-spacer" />
     </div>
@@ -340,10 +340,10 @@ export default function Welcome({ onStart, onSignIn, intro = "auto" }) {
           <div className="welcome-bottom">
             <h1>
               <span className="w-line" style={{ "--d": 0 }}>
-                From arrival
+                Find each other
               </span>{" "}
               <span className="w-line" style={{ "--d": 1 }}>
-                to <em>hello.</em>
+                at <em>Arrivals.</em>
               </span>
             </h1>
             <p className="w-rise" style={{ "--d": 2 }}>

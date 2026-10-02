@@ -19,7 +19,6 @@ import {
   Check,
   Camera,
   Building2,
-  Mail,
   Globe,
   ShieldCheck,
   LifeBuoy,
@@ -27,7 +26,6 @@ import {
   Trash2,
   Clock,
   Link2,
-  UserRound,
   PlaneLanding,
 } from "lucide-react";
 import {
@@ -378,7 +376,6 @@ function ProfileTab() {
         {row(User, "Name", p.name, () => setSheet("name"))}
         {row(Building2, "Company", p.company || "Add", () => setSheet("company"))}
         {row(Phone, "Phone", p.phone || "Add", () => setSheet("phone"))}
-        {row(Mail, "Email", p.email, () => {})}
       </div>
       <div className="pf-group">
         {row(Maximize2, "Default GreetBoard", BOARD_STYLES[p.board?.theme || "Signature"]?.label, () => setSheet("board"))}
@@ -695,8 +692,6 @@ function Detail() {
                         ? `Delayed · now ${new Date(fs.estimated).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })}`
                         : fs.status || "On time"}
               </p>
-            ) : g.flight && !ended ? (
-              <p className="muted">{g.flightError ? "Flight information unavailable. Your details still work." : "Live flight updates appear here when available."}</p>
             ) : null}
           </span>
         </div>
@@ -751,9 +746,8 @@ function Detail() {
         {g.phone && (
           <a className="pf-row" href={"tel:" + g.phone}><Phone size={20} /><span>Call {n}</span><ChevronRight size={18} /></a>
         )}
-        <button className="pf-row" onClick={() => a.setModal("board")}><Maximize2 size={20} /><span>Show GreetBoard</span><ChevronRight size={18} /></button>
-        {!ended && (
-          <button className="pf-row" onClick={() => a.setModal("share")}><Link2 size={20} /><span>{g.state === "CREATED" ? `Send to ${n}` : "Send link again"}</span><ChevronRight size={18} /></button>
+        {!ended && g.state !== "CREATED" && (
+          <button className="pf-row" onClick={() => a.setModal("share")}><Link2 size={20} /><span>Send link again</span><ChevronRight size={18} /></button>
         )}
         {!ended && !live && (
           <button className="pf-row" onClick={a.editGreet}><Pencil size={20} /><span>Edit</span><ChevronRight size={18} /></button>
@@ -806,13 +800,7 @@ export default function Greeter() {
         <span className={"gr-inline-title" + (titled ? " on" : "")} aria-hidden="true">
           {title}
         </span>
-        <button className="glass-btn gr-me" onClick={() => a.setPage("profile")} aria-label="Profile">
-          {a.session ? (
-            <Avatar name={a.profile?.name || a.session.user?.name} src={a.profile?.photo} size={36} />
-          ) : (
-            <UserRound size={21} />
-          )}
-        </button>
+        <span aria-hidden="true" />
       </header>
       <main className="gr-main">
         {a.banner}
@@ -821,6 +809,7 @@ export default function Greeter() {
         {a.page === "profile" && <ProfileTab />}
         {a.page === "detail" && <Detail />}
       </main>
+      {a.session && !(a.page === "detail" && a.g && LIVE.includes(a.g.state)) && (
       <div className={"gr-dock" + (compact ? " is-compact" : "")}>
         <nav className="gr-tabs" aria-label="Main">
           {TABS.map(([id, Icon, label]) => (
@@ -837,6 +826,7 @@ export default function Greeter() {
           </button>
         )}
       </div>
+      )}
     </div>
   );
 }

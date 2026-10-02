@@ -114,10 +114,10 @@ export default function Live() {
             <h2>{t("{peer} says you’ve met", { peer })}</h2>
             <p>{t("Did you find each other?")}</p>
             <button className="btn primary" disabled={busy} onClick={() => a.run(() => a.action("confirm"))}>
-              {t("YES, WE’VE MET")}
+              {t("Yes, we’ve met")}
             </button>
             <button className="btn ghost" onClick={() => a.run(() => a.action("state", "LIVE_GREET"))} disabled={busy}>
-              {t("NOT YET")}
+              {t("Not yet")}
             </button>
           </>
         )}
@@ -183,7 +183,7 @@ export default function Live() {
         </div>
         {isGuest ? (
           <button className="btn lime" disabled={busy} onClick={flash}>
-            <Zap size={20} /> {t("FLASH MY GREETER")}
+            <Zap size={20} /> {t("Flash my greeter")}
           </button>
         ) : (
           <button className="btn primary" onClick={() => a.setModal("board")}>
@@ -284,7 +284,7 @@ export default function Live() {
           ) : null}
           {isGuest ? (
             <button className="btn lime" disabled={busy} onClick={flash}>
-              <Zap size={20} /> {t("FLASH MY GREETER")}
+              <Zap size={20} /> {t("Flash my greeter")}
             </button>
           ) : (
             <button className="btn primary" onClick={() => a.setModal("board")}>

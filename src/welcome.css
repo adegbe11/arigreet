@@ -906,7 +906,7 @@
   height: 100%;
   display: block;
   object-fit: cover;
-  object-position: 50% 40%;
+  object-position: 0% 30%;
 }
 .welcome-bottom {
   position: relative;
@@ -1027,9 +1027,9 @@
   max-width: 21rem;
   text-wrap: balance;
 }
-/* Greeting photo: passenger walks toward her greeter */
+/* Greeter holding the name board on his phone: keep the board and his face in frame */
 .welcome-hero img {
-  object-position: 50% 30%;
+  object-position: 36% 30%;
 }
 @media (min-width: 900px) {
   .welcome-hero {

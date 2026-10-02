@@ -24,7 +24,7 @@ import QRCode from "qrcode";
 import { useApp, Sheet, first, Plate, Avatar, airportName, LIVE } from "./ui.jsx";
 import { JoinForm } from "./Welcome.jsx";
 import { isNative, SITE } from "./native.js";
-import GoogleButton, { Or } from "./GoogleButton.jsx";
+import GoogleButton from "./GoogleButton.jsx";
 
 function shrink(file, max = 560) {
   return new Promise((resolve, reject) => {
@@ -180,10 +180,10 @@ function Permission({ close }) {
         <li><ShieldCheck size={20} /> {t("Stops when you meet or end sharing")}</li>
       </ul>
       <button className="btn primary" disabled={a.busy} onClick={a.locationStart}>
-        {t("Share My Location")}
+        {t("Share my location")}
       </button>
       <button className="btn ghost" disabled={a.busy} onClick={a.skipLocation}>
-        {t("Not Now")}
+        {t("Not now")}
       </button>
     </Sheet>
   );
@@ -207,10 +207,10 @@ function Confirm({ close }) {
           })
         }
       >
-        {t("YES, WE’VE MET")}
+        {t("Yes, we’ve met")}
       </button>
       <button className="btn ghost" onClick={close}>
-        {t("NOT YET")}
+        {t("Not yet")}
       </button>
     </Sheet>
   );
@@ -370,8 +370,8 @@ function Auth({ close, initialMode = "login" }) {
               disabled={a.busy}
               onError={a.setError}
               onToken={(idToken) => a.run(async () => { await a.signIn("google", { idToken }); close(); })}
+              or
             />
-            <Or />
           </>
         )}
         {mode === "register" && (

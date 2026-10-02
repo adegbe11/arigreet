@@ -31,7 +31,7 @@ const G = () => (
   </svg>
 );
 
-export default function GoogleButton({ onToken, onError, disabled }) {
+export default function GoogleButton({ onToken, onError, disabled, or }) {
   const [id, setId] = useState(null);
   const [busy, setBusy] = useState(false);
   const box = useRef(null);
@@ -68,8 +68,14 @@ export default function GoogleButton({ onToken, onError, disabled }) {
     };
   }, [id]);
   if (!id) return null;
-  if (!isNative) return <div className="g-btn-web" ref={box} />;
+  if (!isNative) return (
+    <>
+      <div className="g-btn-web" ref={box} />
+      {or && <Or />}
+    </>
+  );
   return (
+    <>
     <button
       type="button"
       className="g-btn"
@@ -87,6 +93,8 @@ export default function GoogleButton({ onToken, onError, disabled }) {
     >
       <G /> {busy ? "Please wait…" : "Continue with Google"}
     </button>
+    {or && <Or />}
+    </>
   );
 }
 

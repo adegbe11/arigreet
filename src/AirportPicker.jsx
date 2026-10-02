@@ -58,9 +58,8 @@ function Row({ a, onPick }) {
         <span className="ap-code">{a.iata}</span>
         <span className="ap-text">
           <b>{a.city}</b>
-          <small>{a.name}</small>
+          <small>{[a.name, countryName(a.country)].filter(Boolean).join(", ")}</small>
         </span>
-        <span className="ap-country">{countryName(a.country)}</span>
       </button>
     </li>
   );

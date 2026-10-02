@@ -558,19 +558,33 @@
   background: var(--soft);
   overflow: hidden;
 }
-.cf-summary > div {
+.cf-summary > button {
+  width: 100%;
+  border: 0;
+  background: none;
+  font: inherit;
+  color: inherit;
+  text-align: left;
+  cursor: pointer;
   display: flex;
   align-items: flex-start;
   gap: 14px;
   padding: 14px 16px;
 }
-.cf-summary > div + div {
+.cf-summary > button + button {
   border-top: 1px solid var(--line);
 }
 .cf-summary svg {
   margin-top: 2px;
   color: var(--ikb);
   flex-shrink: 0;
+}
+.cf-summary > button:active {
+  background: var(--line);
+}
+.cf-summary svg.cf-sum-go {
+  margin: 2px 0 0 auto;
+  color: var(--ink-3, #9aa0a6);
 }
 .cf-summary span {
   display: flex;
@@ -827,3 +841,7 @@
   display: block;
   margin: -6px 0 8px -4px;
 }
+
+/* Long names shrink to fit the board instead of breaking mid-word. */
+.cf-board { container-type: inline-size; }
+.cf-board-name span { font-size: min(1em, calc(100cqi / (var(--len, 6) * 0.66))); }
