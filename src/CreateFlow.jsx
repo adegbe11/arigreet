@@ -829,15 +829,6 @@ export default function CreateFlow({
                 v.label,
               ])}
             />
-            <Segmented
-              label="Shape"
-              value={form.boardOrientation || "Portrait"}
-              onChange={(v) => set("boardOrientation", v)}
-              options={[
-                ["Portrait", "Portrait"],
-                ["Landscape", "Landscape"],
-              ]}
-            />
             <div className="cf-group">
               {form.flight && (
                 <Toggle

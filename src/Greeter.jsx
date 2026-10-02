@@ -19,7 +19,6 @@ import {
   Check,
   Camera,
   Building2,
-  Globe,
   ShieldCheck,
   LifeBuoy,
   LogOut,
@@ -325,7 +324,6 @@ function BoardSheet({ onClose }) {
       <GreetBoardPreview form={{ ...b, name: "Helen Johnson" }} small />
       {seg("Name", "boardName", [["Full name", "Full name"], ["First name", "First name"]])}
       {seg("Colour", "theme", Object.entries(BOARD_STYLES).map(([k, v]) => [k, v.label]))}
-      {seg("Shape", "boardOrientation", [["Portrait", "Portrait"], ["Landscape", "Landscape"]])}
       <button className="btn primary" onClick={() => a.run(async () => { await a.saveProfile({ board: b }); onClose(); })}>Save</button>
     </Sheet>
   );
@@ -382,7 +380,6 @@ function ProfileTab() {
         {row(Car, "Saved vehicles", (p.vehicles || []).length || "None", () => setSheet("vehicles"))}
       </div>
       <div className="pf-group">
-        {row(Globe, "Language", p.language || "English", () => setSheet("language"))}
         {row(Bell, "Notifications", notif.enabled ? "On" : "Off", () => setSheet("notifications"))}
         {row(ShieldCheck, "Privacy", undefined, () => setSheet("privacy"))}
         {row(LifeBuoy, "Help", undefined, () => setSheet("help"))}
@@ -397,19 +394,6 @@ function ProfileTab() {
       {sheet === "phone" && <EditText title="Phone" label="Phone number" type="tel" value={p.phone} hint="Guests can call this number from their link." onClose={() => setSheet(null)} onSave={(v) => a.saveProfile({ phone: v })} />}
       {sheet === "board" && <BoardSheet onClose={() => setSheet(null)} />}
       {sheet === "vehicles" && <VehiclesSheet onClose={() => setSheet(null)} />}
-      {sheet === "language" && (
-        <Sheet title="Language" onClose={() => setSheet(null)}>
-          <div className="pf-group">
-            {["English", "Ελληνικά", "Français", "Español", "Deutsch", "Italiano"].map((l) => (
-              <button key={l} className="pf-row" onClick={() => a.run(async () => { await a.saveProfile({ language: l }); setSheet(null); })}>
-                <span>{l}</span>
-                {(p.language || "English") === l && <Check size={18} />}
-              </button>
-            ))}
-          </div>
-          <p className="muted">More languages are on the way. The app shows in English for now.</p>
-        </Sheet>
-      )}
       {sheet === "notifications" && (
         <Sheet title="Notifications" onClose={() => setSheet(null)}>
           <p className="muted">Arigreet tells you when your guest opens the link, lands, collects bags, is ready, is nearby, or flashes your GreetBoard. Nothing else.</p>
@@ -590,7 +574,7 @@ function Detail() {
         </div>
       </div>
 
-      {g.helpAt && a.now - g.helpAt < 3 * 60000 && !ended && (
+      {g.helpAt && a.now - g.helpAt < 3 * 60000 && !ended && g.state !== "MEETING_CONFIRMATION" && (
         <section className="dt-help" role="alert">
           <b>{n} can’t find you.</b>
           <p>Hold up your GreetBoard where {n} can see it.</p>

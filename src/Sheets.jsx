@@ -61,7 +61,7 @@ function Help({ close }) {
   return (
     <Sheet title={sent ? t("{peer} has been told", { peer }) : t("Telling {peer}…", { peer })} onClose={close}>
       <p className="sh-lede">
-        {t("{peer} has been told. Stay where you are and look for your name on their phone.", { peer })}
+        {t("Stay where you are and look for your name on {peer}’s phone.", { peer })}
       </p>
       <div className="sh-point">
         {photo ? <img className="sh-face" src={photo} alt={g.greeter} /> : <MapPin size={22} />}

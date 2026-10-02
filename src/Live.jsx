@@ -131,12 +131,7 @@ export default function Live() {
           <Phone size={21} />
           {t("Call")}
         </a>
-      ) : (
-        <button disabled title={t("No phone number on this Greet")}>
-          <Phone size={21} />
-          {t("Call")}
-        </button>
-      )}
+      ) : null}
       {!isGuest && (
         <button onClick={() => a.setModal("board")}>
           <Maximize2 size={20} />
