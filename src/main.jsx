@@ -414,6 +414,11 @@ export default function App() {
   }, [g?.id, offlinePickup]);
   useEffect(() => {
     if (g && ENDED.includes(g.state)) stopLocal();
+    // The other person says "we've met": put the sign down and show the question.
+    if (g?.state === "MEETING_CONFIRMATION" && !g.confirmations?.includes(role) && ["board", "finder"].includes(modal)) {
+      setModal(null);
+      haptic("success");
+    }
   }, [g?.state]);
 
   /* GreetBeacon: the guest flashed — vibrate, open the board, optional chime (spec §38) */
