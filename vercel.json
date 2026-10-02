@@ -20,6 +20,11 @@
   ],
   "redirects": [
     {
+      "source": "/app/",
+      "destination": "https://app.arigreet.com/app",
+      "permanent": false
+    },
+    {
       "source": "/app",
       "destination": "https://app.arigreet.com/app",
       "permanent": false
@@ -31,6 +36,11 @@
     },
     {
       "source": "/g/:token",
+      "destination": "https://app.arigreet.com/g/:token",
+      "permanent": false
+    },
+    {
+      "source": "/g/:token/",
       "destination": "https://app.arigreet.com/g/:token",
       "permanent": false
     }
