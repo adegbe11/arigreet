@@ -3,7 +3,7 @@
    Who runs Arigreet: fill in OPERATOR.name with your full legal name. */
 
 export const OPERATOR = {
-  name: "", // full legal name of the person who runs Arigreet
+  name: "Collins Omoikhudu Asein",
   country: "Greece",
   email: "hello@arigreet.com",
 };
