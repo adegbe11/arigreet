@@ -12,29 +12,72 @@
       "maxDuration": 10
     }
   },
-  "rewrites": [{ "source": "/og/:slug.png", "destination": "/api/og?slug=:slug" }],
+  "rewrites": [
+    {
+      "source": "/og/:slug.png",
+      "destination": "/api/og?slug=:slug"
+    }
+  ],
   "redirects": [
-    { "source": "/app", "destination": "/#board", "permanent": false },
-    { "source": "/app/:path*", "destination": "/#board", "permanent": false }
+    {
+      "source": "/app",
+      "destination": "https://app.arigreet.com/app",
+      "permanent": false
+    },
+    {
+      "source": "/app/:path*",
+      "destination": "https://app.arigreet.com/app/:path*",
+      "permanent": false
+    },
+    {
+      "source": "/g/:token",
+      "destination": "https://app.arigreet.com/g/:token",
+      "permanent": false
+    }
   ],
   "headers": [
     {
       "source": "/(.*)",
       "headers": [
-        { "key": "X-Content-Type-Options", "value": "nosniff" },
-        { "key": "Referrer-Policy", "value": "strict-origin-when-cross-origin" },
-        { "key": "X-Frame-Options", "value": "SAMEORIGIN" },
-        { "key": "Strict-Transport-Security", "value": "max-age=63072000; includeSubDomains; preload" },
-        { "key": "Permissions-Policy", "value": "camera=(), microphone=(), geolocation=()" }
+        {
+          "key": "X-Content-Type-Options",
+          "value": "nosniff"
+        },
+        {
+          "key": "Referrer-Policy",
+          "value": "strict-origin-when-cross-origin"
+        },
+        {
+          "key": "X-Frame-Options",
+          "value": "SAMEORIGIN"
+        },
+        {
+          "key": "Strict-Transport-Security",
+          "value": "max-age=63072000; includeSubDomains; preload"
+        },
+        {
+          "key": "Permissions-Policy",
+          "value": "camera=(), microphone=(), geolocation=()"
+        }
       ]
     },
     {
       "source": "/site/(img|fonts)/(.*)",
-      "headers": [{ "key": "Cache-Control", "value": "public, max-age=2592000, stale-while-revalidate=86400" }]
+      "headers": [
+        {
+          "key": "Cache-Control",
+          "value": "public, max-age=2592000, stale-while-revalidate=86400"
+        }
+      ]
     },
     {
       "source": "/site/(site\\.css|site\\.js)",
-      "headers": [{ "key": "Cache-Control", "value": "public, max-age=3600, stale-while-revalidate=86400" }]
+      "headers": [
+        {
+          "key": "Cache-Control",
+          "value": "public, max-age=3600, stale-while-revalidate=86400"
+        }
+      ]
     }
   ]
 }
