@@ -33,11 +33,11 @@ app.use(
       directives: {
         "default-src": ["'self'"],
         "script-src": ["'self'", "https://accounts.google.com/gsi/client"],
-        "style-src": ["'self'", "'unsafe-inline'", "https://accounts.google.com/gsi/style", "https://fonts.googleapis.com"],
+        "style-src": ["'self'", "'unsafe-inline'", "https://accounts.google.com/gsi/style"],
         "img-src": ["'self'", "data:", "blob:", "https:"],
         "connect-src": ["'self'", "https://accounts.google.com/gsi/"],
         "frame-src": ["https://accounts.google.com/gsi/"],
-        "font-src": ["'self'", "data:", "https://fonts.gstatic.com"],
+        "font-src": ["'self'", "data:"],
         "worker-src": ["'self'"],
         "object-src": ["'none'"],
         "frame-ancestors": ["'none'"],
