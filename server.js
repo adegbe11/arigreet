@@ -64,7 +64,7 @@ if (!vapid) {
 }
 const vapidKeys = JSON.parse(vapid.value);
 webpush.setVapidDetails(
-  process.env.VAPID_SUBJECT || "mailto:support@arigreet.com",
+  process.env.VAPID_SUBJECT || "mailto:hello@arigreet.com",
   vapidKeys.publicKey,
   vapidKeys.privateKey,
 );
@@ -538,7 +538,7 @@ app.get("/api/config", (req, res) =>
     legal: {
       name: process.env.LEGAL_NAME || "",
       address: process.env.LEGAL_ADDRESS || "",
-      email: process.env.CONTACT_EMAIL || "",
+      email: process.env.CONTACT_EMAIL || "hello@arigreet.com",
       retentionDays,
     },
   }),
