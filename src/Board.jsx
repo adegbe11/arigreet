@@ -15,8 +15,8 @@ import { first } from "./ui.jsx";
 const STYLES = { Signature: "klein", Dark: "dark", Light: "light" };
 const FONT = '900 100px -apple-system, "SF Pro Display", "Inter var", system-ui, sans-serif';
 
-function useFit(lines, box) {
-  const [fit, setFit] = useState({ size: 80, stretch: 1 });
+function useFit(words, box, wide) {
+  const [fit, setFit] = useState({ size: 80, stretch: 1, rows: words });
   useLayoutEffect(() => {
     const el = box.current;
     if (!el) return;
@@ -25,23 +25,61 @@ function useFit(lines, box) {
       // Measure with the font the board actually draws in, including its tight letter-spacing.
       const fam = getComputedStyle(el.querySelector(".gb-name") || el).fontFamily;
       ctx.font = fam ? `900 100px ${fam}` : FONT;
-      const widest = Math.max(...lines.map((l) => ctx.measureText(l).width - 5 * (l.length - 1)), 1);
       const w = el.clientWidth * 0.9;
       const h = el.clientHeight;
-      const byWidth = (100 * w) / widest;
-      const byHeight = h / (lines.length * 0.92);
-      const size = Math.max(28, Math.min(byWidth, byHeight));
+      const layout = (rows) => {
+        const widest = Math.max(...rows.map((l) => ctx.measureText(l).width - 3.5 * (l.length - 1)), 1);
+        return { rows, size: Math.max(28, Math.min((100 * w) / widest, h / (rows.length * 0.92))) };
+      };
+      // One word per line suits a tall screen; a wide screen often fits the full name on one line, bigger.
+      let best = layout(words);
+      if (wide && words.length > 1) {
+        const one = layout([words.join(" ")]);
+        if (one.size > best.size) best = one;
+      }
       // Tall sign letters read from further away: stretch upward into spare height.
-      const stretch = Math.max(1, Math.min(2.1, h / (lines.length * size * 0.92)));
-      setFit({ size, stretch });
+      const stretch = Math.max(1, Math.min(2.1, h / (best.rows.length * best.size * 0.92)));
+      setFit({ size: best.size, stretch, rows: best.rows });
     };
     fit();
     const ro = new ResizeObserver(fit);
     ro.observe(el);
     document.fonts?.ready.then(fit);
     return () => ro.disconnect();
-  }, [lines.join(" ")]);
+  }, [words.join(" "), wide]);
   return fit;
+}
+
+/* Turned sideways? Use the screen rotation when the phone allows it. When rotation
+   lock is on, the motion sensor still knows, and the board turns itself. */
+function useSideways(enabled) {
+  const [land, setLand] = useState(() => matchMedia("(orientation: landscape)").matches);
+  const [turn, setTurn] = useState(0); // degrees the board rotates itself: 0, 90 or -90
+  useEffect(() => {
+    const m = matchMedia("(orientation: landscape)");
+    const on = () => {
+      setLand(m.matches);
+      if (m.matches) setTurn(0);
+    };
+    m.addEventListener?.("change", on);
+    if (!enabled) return () => m.removeEventListener?.("change", on);
+    const tilt = (e) => {
+      if (m.matches || e.gamma == null) return;
+      const g = e.gamma;
+      const b = Math.abs(e.beta ?? 0);
+      setTurn((t) => {
+        if (t === 0 && Math.abs(g) > 55 && b < 45) return g > 0 ? -90 : 90;
+        if (t !== 0 && (Math.abs(g) < 30 || b > 60)) return 0;
+        return t;
+      });
+    };
+    addEventListener("deviceorientation", tilt);
+    return () => {
+      m.removeEventListener?.("change", on);
+      removeEventListener("deviceorientation", tilt);
+    };
+  }, [enabled]);
+  return { landscape: land || turn !== 0, turn, setTurn };
 }
 
 /* Sparkles: small four-point stars that twinkle and drift upward. */
@@ -128,12 +166,9 @@ export default function Board({ g, now, onClose, onSeeGuest, preview }) {
     .flatMap((w) => (w.length > 9 && w.includes("-") ? w.split(/(?<=-)/) : [w]))
     .filter(Boolean);
   const box = useRef(null);
-  const { size, stretch } = useFit(lines.length ? lines : [" "], box);
-  const [landscape, setLandscape] = useState(() => matchMedia("(orientation: landscape)").matches);
+  const { landscape, turn, setTurn } = useSideways(!preview);
+  const { size, stretch, rows } = useFit(lines.length ? lines : [" "], box, landscape);
   useEffect(() => {
-    const m = matchMedia("(orientation: landscape)");
-    const on = () => setLandscape(m.matches);
-    m.addEventListener?.("change", on);
     let lock;
     navigator.wakeLock?.request("screen").then((l) => (lock = l)).catch(() => {});
     // Where the browser allows it (Android), hide the browser bars too.
@@ -141,16 +176,22 @@ export default function Board({ g, now, onClose, onSeeGuest, preview }) {
     const o = document.body.style.overflow;
     document.body.style.overflow = "hidden";
     return () => {
-      m.removeEventListener?.("change", on);
       lock?.release?.();
       if (document.fullscreenElement) document.exitFullscreen?.().catch(() => {});
       document.body.style.overflow = o;
     };
   }, []);
   const wantsLandscape = g.boardOrientation === "Landscape";
+  // iPhone asks before sharing motion; ask on the first tap, then follow the phone.
+  const askMotion = () => {
+    const D = window.DeviceOrientationEvent;
+    if (D?.requestPermission) D.requestPermission().catch(() => {});
+  };
   return (
     <div
-      className={`gb ${style} ${flashing ? "flashing" : ""} ${landscape ? "is-land" : "is-port"}`}
+      className={`gb ${style} ${flashing ? "flashing" : ""} ${landscape ? "is-land" : "is-port"} ${turn ? "is-turned" : ""}`}
+      style={turn ? { "--turn": turn + "deg" } : undefined}
+      onPointerDown={askMotion}
       role="dialog"
       aria-modal="true"
       aria-label={"GreetBoard for " + g.name}
@@ -170,7 +211,7 @@ export default function Board({ g, now, onClose, onSeeGuest, preview }) {
         </div>
         <div className="gb-fit" ref={box}>
           <h1 className="gb-name" style={{ fontSize: size + "px", transform: `scaleY(${stretch})` }}>
-            {lines.map((w, i) => (
+            {rows.map((w, i) => (
               <span key={i} data-text={w}>
                 {w}
               </span>
@@ -184,10 +225,14 @@ export default function Board({ g, now, onClose, onSeeGuest, preview }) {
           <span className="gb-live" role="status">
             <i /> {first(g.name)} is looking for you
           </span>
-        ) : wantsLandscape && !landscape ? (
-          <span className="gb-hint">
-            <RotateCw size={16} /> Turn your phone sideways for a bigger sign
-          </span>
+        ) : !landscape && !preview ? (
+          <button className="gb-hint" onClick={() => setTurn(-90)}>
+            <RotateCw size={16} /> {wantsLandscape ? "Turn your phone sideways for a bigger sign" : "Wide sign"}
+          </button>
+        ) : turn ? (
+          <button className="gb-hint" onClick={() => setTurn(0)}>
+            <RotateCw size={16} /> Upright
+          </button>
         ) : null}
         {onSeeGuest && (
           <button className="gb-see" onClick={onSeeGuest}>

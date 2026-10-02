@@ -1627,3 +1627,27 @@
 .fd p.fd-side { color: rgba(255, 255, 255, 0.85); }
 .fd .fd-top b { color: #fff; }
 .fd-actions .btn { font-size: 15px; white-space: nowrap; padding-inline: 10px; }
+
+/* GreetBoard turned by the app itself (phone sideways with rotation lock on) */
+.gb.is-turned {
+  inset: auto;
+  top: 50%;
+  left: 50%;
+  width: 100vh;
+  width: 100dvh;
+  height: 100vw;
+  transform: translate(-50%, -50%) rotate(var(--turn));
+  padding: 14px max(16px, env(safe-area-inset-top)) 14px max(16px, env(safe-area-inset-bottom));
+}
+button.gb-hint {
+  border: 0;
+  padding: 10px 16px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.14);
+  color: inherit;
+  font: inherit;
+  font-size: 15px;
+  font-weight: 650;
+  cursor: pointer;
+}
+.gb.light button.gb-hint { background: rgba(0, 47, 167, 0.08); }
