@@ -1,4 +1,4 @@
-const CACHE = "arigreet-v5";
+const CACHE = "arigreet-v6";
 const MEDIA = "arigreet-guest-media:";
 self.addEventListener("install", (event) =>
   event.waitUntil(
@@ -131,8 +131,12 @@ self.addEventListener("fetch", (event) => {
     return;
   }
   if (url.origin !== self.location.origin) return;
+  // Airport Wi-Fi often says "connected" while nothing loads. Don't wait on it:
+  // after 4 seconds, open the saved app instead.
+  const net = fetch(event.request);
+  const slow = new Promise((_, no) => setTimeout(() => no(Error("slow")), 4000));
   event.respondWith(
-    fetch(event.request)
+    (event.request.mode === "navigate" ? Promise.race([net, slow]) : net)
       .then((res) => {
         if (res.ok)
           caches.open(CACHE).then((c) => c.put(event.request, res.clone()));

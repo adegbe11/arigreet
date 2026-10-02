@@ -17,6 +17,7 @@ import { TERMINALS } from "./terminals.js";
 import { translate, pickLang } from "./i18n.js";
 import { isNative, platform, nativePushToken, nativeSetup, haptic } from "./native.js";
 import { AppCtx, ConnectionBanner, LIVE, ENDED, localDate, first } from "./ui.jsx";
+import { saveGreeter, readGreeter, clearGreeter } from "./greeter-cache.js";
 import {
   savePickup,
   readPickup,
@@ -125,6 +126,9 @@ export default function App() {
   const [now, setNow] = useState(Date.now());
   const [sharing, setSharing] = useState(false);
   const [offlinePickup, setOfflinePickup] = useState(false);
+  const [noSignal, setNoSignal] = useState(false);
+  const [retry, setRetry] = useState(0);
+  const fromServer = useRef(false); // true once Greets came from the server, so only real data is saved
   const [cachedAt, setCachedAt] = useState(null);
   // The welcome screen is a first-launch moment. Once someone taps Get Started
   // (or signs in) the app opens on Home from then on.
@@ -188,6 +192,7 @@ export default function App() {
     if (!res.ok) {
       if (res.status === 401 && session && !isGuest && !tokenOverride) {
         localStorage.removeItem("arigreet-session");
+        clearGreeter(localStorage);
         setSession(null);
       }
       const e = Error(data.error || "This action is unavailable.");
@@ -304,17 +309,34 @@ export default function App() {
           offline();
         }
       });
-    else if (session)
-      run(async () => {
-        const [list, prof] = await Promise.all([api("/greets"), api("/profile").catch(() => null)]);
-        setGreets(list);
-        setProfile(prof);
-      });
+    else if (session) {
+      // No signal at the airport: open the saved copy so the GreetBoard still works.
+      const saved = () => {
+        const c = readGreeter(localStorage, session.user?.id);
+        if (!c) return false;
+        setGreets(c.greets);
+        if (c.profile) setProfile((p) => p || c.profile);
+        setNoSignal(true);
+        return true;
+      };
+      if (!navigator.onLine && saved()) return;
+      (async () => {
+        try {
+          const [list, prof] = await Promise.all([api("/greets"), api("/profile").catch(() => null)]);
+          fromServer.current = true;
+          setGreets(list);
+          setProfile(prof);
+          setNoSignal(false);
+        } catch (e) {
+          if (e.status || !saved()) setError(e.message);
+        }
+      })();
+    }
     else {
       setGreets([]);
       setProfile(null);
     }
-  }, [session, online]);
+  }, [session, online, retry]);
 
   useEffect(() => {
     if (!isGuest || !g || offlinePickup) return;
@@ -487,6 +509,17 @@ export default function App() {
     addEventListener("online", flush);
     return () => removeEventListener("online", flush);
   }, [g?.id]);
+  // Signal comes and goes in airports (and Wi-Fi can say "connected" with no internet): keep trying.
+  useEffect(() => {
+    if (!noSignal) return;
+    const id = setInterval(() => setRetry((n) => n + 1), 15000);
+    return () => clearInterval(id);
+  }, [noSignal]);
+  // Keep the greeter's saved copy current whenever their Greets change.
+  useEffect(() => {
+    if (isGuest || !session || noSignal || !fromServer.current) return;
+    saveGreeter(localStorage, session.user?.id, greets, profile);
+  }, [greets, profile, session, noSignal]);
   const openGreet = (x) => {
     setG(x);
     setPage("detail");
@@ -513,6 +546,8 @@ export default function App() {
     run(async () => {
       await api("/logout", {}).catch(() => {});
       localStorage.removeItem("arigreet-session");
+      clearGreeter(localStorage);
+      fromServer.current = false;
       setSession(null);
       setGreets([]);
       setG(null);
@@ -729,7 +764,7 @@ export default function App() {
   const fresh = Object.values(positions).every((p) => now - p.timestamp < 30000);
   const accurate = Object.values(positions).every((p) => p.accuracy <= 30);
 
-  const banner = <ConnectionBanner online={online} error={error} onDismiss={() => setError("")} t={t} />;
+  const banner = <ConnectionBanner online={online && !noSignal} error={error} onDismiss={() => setError("")} t={t} />;
   const ctx = {
     session, profile, saveProfile, signIn, signOut, isGuest, role, g, setG, greets,
     api, action, run, busy, error, setError, online, now, positions, distance, fresh,
