@@ -198,19 +198,9 @@ function Confirm({ close }) {
   const { t } = a;
   return (
     <Sheet onClose={close} label={t("Did you find each other?")}>
-      <span className="sh-hand">👋</span>
       <h2 className="ui-sheet-title center">{t("Did you find each other?")}</h2>
       <p className="sh-lede center">{t("Confirm once you’re face to face. Location sharing stops when you’ve met.")}</p>
-      <button
-        className="btn primary"
-        disabled={a.busy}
-        onClick={() =>
-          a.run(async () => {
-            await a.action("confirm");
-            close();
-          })
-        }
-      >
+      <button className="btn primary" disabled={a.busy} onClick={a.confirmMet}>
         {t("Yes, we’ve met")}
       </button>
       <button className="btn ghost" onClick={close}>

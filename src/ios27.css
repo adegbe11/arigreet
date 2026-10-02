@@ -1651,3 +1651,120 @@ button.gb-hint {
   cursor: pointer;
 }
 .gb.light button.gb-hint { background: rgba(0, 47, 167, 0.08); }
+
+/* ── The meeting: the closer they get, the less there is on screen ── */
+/* Look up: no card, no map. A face, two words, one action. */
+.lv.lv-close {
+  min-height: calc(100dvh - 140px);
+  justify-content: center;
+  gap: 12px;
+}
+.lv-close .lv-look {
+  padding: 8px 0 18px;
+  background: none;
+  box-shadow: none;
+  gap: 10px;
+}
+.lv-close .lv-look .ui-avatar,
+.lv-close .lv-look > img,
+.lv-close .lv-look > span:first-child {
+  box-shadow: 0 0 0 4px #fff, 0 0 0 7px var(--lime, #ccff00);
+  border-radius: 50%;
+}
+.lv-close .lv-look h2 {
+  margin-top: 14px;
+  font-size: clamp(3rem, 14vw, 4.2rem);
+}
+.lv-close .lv-look p {
+  color: var(--ink-2, #5b6270);
+}
+.lv-quiet {
+  display: flex;
+  justify-content: center;
+  gap: 22px;
+  min-height: 44px;
+  align-items: center;
+}
+.lv-quiet a,
+.lv-quiet button {
+  min-height: 44px;
+  padding: 0 4px;
+  border: 0;
+  background: none;
+  font: inherit;
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--ikb, #002fa7);
+  text-decoration: none;
+  cursor: pointer;
+}
+.lv-quiet button:last-child:not(:first-child),
+.lv-close .lv-quiet button {
+  color: var(--bad, #d63031);
+}
+/* Confirming: a calm check, not an emoji */
+.lv-done-mark {
+  display: grid;
+  place-items: center;
+  width: 72px;
+  height: 72px;
+  margin: 0 auto 6px;
+  border-radius: 50%;
+  color: #0b1220;
+  background: var(--lime, #ccff00);
+}
+.lv-confirm {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+.lv-confirm .btn {
+  width: 100%;
+}
+/* Finder when GPS can't give a direction */
+.fd-ring {
+  width: 180px;
+  height: 180px;
+  border-radius: 50%;
+  border: 2px dashed rgba(255, 255, 255, 0.45);
+}
+.fd h2.fd-big.fd-about {
+  font-size: clamp(34px, 10vw, 48px);
+}
+.lv-foot .lv-point {
+  max-width: 60%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+/* Together: successful recognition is the lime signal */
+.gs-check {
+  color: #0b1220;
+  background: var(--lime, #ccff00);
+}
+@media (prefers-reduced-motion: reduce) {
+  .gs-check { animation: none; }
+}
+/* "Look for Klein Blue": show the sign itself, so it never reads as a button */
+.lv-beacon {
+  padding: 4px 0;
+  background: none;
+  color: var(--ink, #0b1220);
+  font-size: 1.05rem;
+}
+.lv-beacon span {
+  order: -1;
+  display: inline-grid;
+  place-items: center;
+  width: 46px;
+  height: 32px;
+  border-radius: 7px;
+  font-size: 0.72rem;
+  color: var(--lime, #ccff00);
+  background: var(--ikb, #002fa7);
+}
+/* 44 pt minimum touch targets in the live screens */
+.lv-point,
+.lv-stop {
+  min-height: 44px;
+}

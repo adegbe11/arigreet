@@ -155,6 +155,7 @@ export default function App() {
   );
   const [mediaCount, setMediaCount] = useState(null);
   const watch = useRef(null);
+  const beat = useRef(null);
 
   useEffect(() => {
     if (!isGuest || !("serviceWorker" in navigator)) return;
@@ -250,6 +251,8 @@ export default function App() {
   function stopLocal() {
     if (watch.current !== null) navigator.geolocation.clearWatch(watch.current);
     watch.current = null;
+    clearInterval(beat.current);
+    beat.current = null;
     setSharing(false);
   }
   useEffect(() => {
@@ -688,8 +691,9 @@ export default function App() {
       if (!navigator.geolocation)
         throw Error(t("Location isn’t available on this device. Use the meeting point and the GreetBoard."));
       stopLocal();
-      watch.current = navigator.geolocation.watchPosition(
-        (p) => {
+      let last = null;
+      const send = (p) => {
+          last = { p, at: Date.now() };
           setSharing(true);
           api("/greets/" + g.id + "/action", {
             action: "location",
@@ -705,18 +709,27 @@ export default function App() {
               setG(next);
               setGreets((v) => v.map((x) => (x.id === next.id ? next : x)));
             })
-            .catch((e) => setError(e.message));
-        },
+            .catch((e) => e.status && e.status !== 409 && setError(e.message)); // no signal: the offline banner says it
+        };
+      watch.current = navigator.geolocation.watchPosition(
+        send,
         (e) => {
-          stopLocal();
-          setError(
-            e.code === 1
-              ? t("Location is blocked. Turn it on in your browser settings, or use the meeting point and the GreetBoard.")
-              : t("Your location isn’t available right now. Use the meeting point and the GreetBoard."),
-          );
+          // Denied: stop and say how to turn it back on. A timeout or weak
+          // signal indoors is normal at airports: keep listening, the screen
+          // already shows the location isn't updating and the meeting point.
+          if (e.code === 1) {
+            stopLocal();
+            setError(t("Location is blocked. Turn it on in your browser settings, or use the meeting point and the GreetBoard."));
+          }
         },
         { enableHighAccuracy: true, maximumAge: 5000, timeout: 20000 },
       );
+      // A phone standing still stops reporting: the position hasn't changed.
+      // While the watch is still running, say so every 15 s (same fix, same
+      // accuracy) so the other person doesn't see "hasn't updated" while you wait.
+      beat.current = setInterval(() => {
+        if (last && Date.now() - last.at > 12000) send(last.p);
+      }, 15000);
     });
   const skipLocation = () =>
     run(async () => {
@@ -749,6 +762,13 @@ export default function App() {
       stopLocal();
       await action("stop");
     });
+  // "Yes, we've met": this phone stops sending its location straight away.
+  const confirmMet = () =>
+    run(async () => {
+      stopLocal();
+      await action("confirm");
+      setModal(null);
+    });
 
   const positions = g?.locations || {};
   let distance = null;
@@ -768,7 +788,7 @@ export default function App() {
   const ctx = {
     session, profile, saveProfile, signIn, signOut, isGuest, role, g, setG, greets,
     api, action, run, busy, error, setError, online, now, positions, distance, fresh,
-    accurate, sharing, locationStart, skipLocation, stopSharing, stopLocal, modal,
+    accurate, sharing, locationStart, skipLocation, stopSharing, stopLocal, confirmMet, modal,
     setModal, page, setPage, openGreet, selectGreet: setG, create, editGreet, pickupPhoto,
     enableNotifications, offlinePickup, cachedAt, guestView, setGuestView, guestFail,
     markSent, banner, t, lang, setLang,

@@ -90,8 +90,12 @@ export default function Finder({ onClose }) {
   const err = have ? Math.round(Math.max(me.accuracy || 0, them.accuracy || 0)) : 0;
   const weak = err > 25;
   const stale = have && now - Math.min(me.timestamp, them.timestamp) > 30000;
-  const here = d != null && d <= Math.max(8, Math.min(err, 15));
-  const aligned = rel != null && (rel < 20 || rel > 340);
+  // Never claim more precision than GPS has: "right here" only when the
+  // distance plus the error still fits inside a few metres, and no arrow when
+  // the error is as big as the distance itself (the arrow could point anywhere).
+  const here = d != null && !stale && d + err <= 12;
+  const blurry = d != null && !here && (stale || err >= d * 0.8);
+  const aligned = !blurry && rel != null && (rel < 20 || rel > 340);
 
   const side =
     rel == null
@@ -149,6 +153,12 @@ export default function Finder({ onClose }) {
             <h2 className="fd-big">{t("Look up.")}</h2>
             <p className="fd-side">{t("{peer} is right here.", { peer })}</p>
           </>
+        ) : blurry ? (
+          <>
+            <span className="fd-ring" aria-hidden="true" />
+            <h2 className="fd-big fd-about">{t("Within about {n} m", { n: Math.max(d, err) })}</h2>
+            <p className="fd-side">{t("Direction isn’t reliable here. Look for {place}.", { place: g.exit || g.area })}</p>
+          </>
         ) : (
           <>
             <svg
@@ -174,7 +184,7 @@ export default function Finder({ onClose }) {
             <Compass size={19} /> {t("Turn on compass")}
           </button>
         )}
-        {(weak || stale) && have && (
+        {(weak || stale) && have && !blurry && (
           <p className="fd-note">
             {stale
               ? t("Location hasn’t updated for a moment. Keep walking towards {place}.", { place: g.exit || g.area })

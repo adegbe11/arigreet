@@ -11,7 +11,7 @@ import {
   LocateFixed,
   Smartphone,
 } from "lucide-react";
-import { isNative } from "./native.js";
+import { isNative, haptic } from "./native.js";
 import { useApp, first, Avatar } from "./ui.jsx";
 
 const LiveMap = lazy(() => import("./LiveMap.jsx"));
@@ -82,12 +82,6 @@ export default function Live() {
 
   const flash = () => a.run(() => a.action("flash"));
   const canFind = !!(me && them);
-  const findBtn = (cls) =>
-    canFind && (
-      <button className={"btn lv-find " + cls} onClick={() => a.setModal("finder")}>
-        <LocateFixed size={20} /> {t("Find {peer}", { peer })}
-      </button>
-    );
   const sos = isGuest && (
     <div className="gs-sos">
       <button onClick={() => a.setModal("help")}>{t("I can’t find {peer}", { peer })}</button>
@@ -95,17 +89,91 @@ export default function Live() {
   );
   const see = () => a.setModal("confirm");
 
-  /* Meeting confirmation waiting states (spec §42) */
+  // One quiet tap as each stage arrives: nearby, then look up.
+  const stage = veryClose ? 2 : nearby ? 1 : 0;
+  const lastStage = useRef(stage);
+  useEffect(() => {
+    if (stage > lastStage.current) haptic(stage === 2 ? "success" : "light");
+    lastStage.current = stage;
+  }, [stage]);
+  const call = (isGuest ? g.allowCall && g.contact : g.phone) ? "tel:" + (isGuest ? g.contact : g.phone) : null;
+  const place = g.exit || g.area;
+  const flashBtn = (cls = "lime") => (
+    <button className={"btn " + cls} disabled={busy} onClick={flash}>
+      <Zap size={19} /> {t("Flash my greeter")}
+    </button>
+  );
+  const boardBtn = (cls = "primary") => (
+    <button className={"btn " + cls} onClick={() => a.setModal("board")}>
+      <Maximize2 size={19} /> Show GreetBoard
+    </button>
+  );
+  const seeBtn = (cls) => (
+    <button className={"btn " + cls} onClick={see}>
+      <Check size={19} strokeWidth={2.6} /> {t("I see {peer}", { peer })}
+    </button>
+  );
+  /* Small tools, never more than one row: the person should be walking, not reading. */
+  const tools = (withFind) => (
+    <div className="lv-actions">
+      {withFind && canFind && (
+        <button onClick={() => a.setModal("finder")}>
+          <LocateFixed size={20} />
+          {t("Find {peer}", { peer })}
+        </button>
+      )}
+      {call && (
+        <a href={call}>
+          <Phone size={20} />
+          {t("Call")}
+        </a>
+      )}
+      <button onClick={() => a.setModal("meeting")}>
+        <MapPin size={20} />
+        {t("Meeting point")}
+      </button>
+    </div>
+  );
+  const recognise = isGuest ? (
+    <div className="lv-beacon">
+      {t("Look for")} <b>{beacon}</b> <span aria-hidden="true">●●●</span>
+    </div>
+  ) : lookFor.length || peerPhoto ? (
+    <div className="lv-lookfor-row">
+      {peerPhoto && <img src={peerPhoto} alt="" />}
+      {lookFor.length > 0 && (
+        <ul className="lv-lookfor">
+          <li className="lbl">Look for</li>
+          {lookFor.map((x) => (
+            <li key={x}>{x}</li>
+          ))}
+        </ul>
+      )}
+    </div>
+  ) : null;
+  const flashNote = isGuest && flashing && (
+    <p className="lv-flashing" role="status">
+      {t("Your greeter is flashing. Look for {beacon}", { beacon })} ●●●
+    </p>
+  );
+
+  /* Confirming (spec §42). Whoever confirms stops sharing at once. */
   if (g.state === "MEETING_CONFIRMATION")
     return (
       <section className="lv lv-confirm">
-        <span className="lv-hand">👋</span>
+        <span className="lv-done-mark" aria-hidden="true">
+          <Check size={30} strokeWidth={3} />
+        </span>
         {iConfirmed ? (
           <>
             <h2>{t("Waiting for {peer}", { peer })}</h2>
             <p>{t("You confirmed you’ve met. {peer} needs to confirm too.", { peer })}</p>
-            <p className="lv-auto">{t("If {peer} forgets, this closes by itself in 10 minutes.", { peer })}</p>
-            <button className="btn ghost" onClick={() => a.run(() => a.action("state", "LIVE_GREET"))} disabled={busy}>
+            <p className="lv-auto">{t("Your location is no longer shared.")}</p>
+            <button
+              className="btn ghost"
+              disabled={busy}
+              onClick={() => a.run(() => a.action("state", "LIVE_GREET")).then(() => a.locationStart())}
+            >
               {t("We haven’t met yet")}
             </button>
           </>
@@ -113,7 +181,7 @@ export default function Live() {
           <>
             <h2>{t("{peer} says you’ve met", { peer })}</h2>
             <p>{t("Did you find each other?")}</p>
-            <button className="btn primary" disabled={busy} onClick={() => a.run(() => a.action("confirm"))}>
+            <button className="btn primary" disabled={busy} onClick={() => a.confirmMet()}>
               {t("Yes, we’ve met")}
             </button>
             <button className="btn ghost" onClick={() => a.run(() => a.action("state", "LIVE_GREET"))} disabled={busy}>
@@ -124,78 +192,33 @@ export default function Live() {
       </section>
     );
 
-  const actions = (
-    <div className="lv-actions">
-      {(isGuest ? g.allowCall && g.contact : g.phone) ? (
-        <a href={"tel:" + (isGuest ? g.contact : g.phone)}>
-          <Phone size={21} />
-          {t("Call")}
-        </a>
-      ) : null}
-      {!isGuest && (
-        <button onClick={() => a.setModal("board")}>
-          <Maximize2 size={20} />
-          GreetBoard
-        </button>
-      )}
-      <button onClick={() => a.setModal("meeting")}>
-        <MapPin size={21} />
-        {t("Meeting point")}
-      </button>
-    </div>
-  );
-
-  /* Very close — stop staring at the map (spec §41) */
+  /* Very close: stop looking at the phone. One instruction, the face to look
+     for, and the one thing that makes the greeter easy to spot. */
   if (veryClose)
     return (
-      <section className="lv lv-close">
+      <section className="lv lv-close" aria-live="polite">
         <div className="lv-look">
-          {isGuest ? (
-            <>
-              <span className="lv-hand">👋</span>
-              <h2>{t("Look up")}</h2>
-              <p>{t("{peer} is very close.", { peer })}</p>
-              <div className="lv-beacon">
-                {t("Look for")} <b>{beacon}</b> <span>●●●</span>
-              </div>
-            </>
-          ) : (
-            <>
-              <h2>{peer} is very close.</h2>
-              {peerPhoto ? <img className="lv-guest-photo" src={peerPhoto} alt={g.name} /> : null}
-              {lookFor.length ? (
-                <ul className="lv-lookfor">
-                  <li className="lbl">Look for</li>
-                  {lookFor.map((x) => (
-                    <li key={x}>{x}</li>
-                  ))}
-                </ul>
-              ) : (
-                <p>Hold up your GreetBoard so {peer} can see it.</p>
-              )}
-            </>
-          )}
+          <Avatar name={peerName} src={peerPhoto} size={88} />
+          <h2>{t("Look up")}</h2>
+          <p>{t("{peer} is very close.", { peer })}</p>
+          {recognise}
         </div>
         {isGuest ? (
-          <button className="btn lime" disabled={busy} onClick={flash}>
-            <Zap size={20} /> {t("Flash my greeter")}
-          </button>
+          <>
+            {seeBtn("primary")}
+            {flashBtn("lime")}
+          </>
         ) : (
-          <button className="btn primary" onClick={() => a.setModal("board")}>
-            <Maximize2 size={19} /> SHOW GREETBOARD
-          </button>
+          <>
+            {boardBtn("primary")}
+            {seeBtn("soft")}
+          </>
         )}
-        <button className="btn ink" onClick={see}>
-          <Check size={19} strokeWidth={2.6} /> {t("I SEE {peer}", { peer: peer.toUpperCase() })}
-        </button>
-        {findBtn("soft")}
-        {isGuest && flashing && (
-          <p className="lv-flashing" role="status">
-            {t("Your greeter is flashing. Look for {beacon}", { beacon })} ●●●
-          </p>
-        )}
-        {actions}
-        {sos}
+        {flashNote}
+        <div className="lv-quiet">
+          {call && <a href={call}>{t("Call")}</a>}
+          {isGuest && <button onClick={() => a.setModal("help")}>{t("I can’t find {peer}", { peer })}</button>}
+        </div>
       </section>
     );
 
@@ -212,89 +235,109 @@ export default function Live() {
             ? t("{peer}’s location hasn’t updated for {n} min", { peer, n: ago })
             : signal === "mineweak"
               ? t("Your location isn’t updating")
-              : nearby
-                ? t("{peer} is nearby.", { peer })
-                : t("{peer} is {n} m away", { peer, n: distance });
-  return (
-    <section className={"lv " + (nearby ? "lv-near" : "")}>
-      <div className="lv-card" aria-live="polite">
-        <Avatar name={peerName} src={peerPhoto} size={48} />
-        <div>
-          {nearby && distance !== null ? (
-            <>
-              <b className="lv-near-title">{t("{peer} is nearby.", { peer })}</b>
-              <span className="lv-metres">{distance} m</span>
-            </>
-          ) : (
-            <>
-              <b>{headline}</b>
-              {signal === "ok" && <span className="lv-sub">{eta(distance, t)}</span>}
-              {signal === "approx" && (
-                <span className="lv-sub">
-                  <Signal size={14} /> {t("Approximate location")} · {eta(distance, t)}
-                </span>
-              )}
-              {["weak", "theirs", "mine", "stopped", "mineweak"].includes(signal) && (
-                <span className="lv-sub">{t("Meet at {place}", { place: [g.area, g.exit].filter(Boolean).join(" · ") })}</span>
-              )}
-              {signal === "mine" && !sharing && (
-                <button className="lv-inline" onClick={() => a.setModal("permission")}>
-                  {t("Share my location")}
-                </button>
-              )}
-            </>
-          )}
-          {approaching && signal === "ok" && !nearby && (
-            <span className="lv-moving">
-              <Navigation size={13} /> {t("Moving toward you")}
-            </span>
-          )}
-        </div>
+              : t("{peer} is {n} m away", { peer, n: distance });
+
+  const card = (
+    <div className="lv-card" aria-live="polite">
+      <Avatar name={peerName} src={peerPhoto} size={48} />
+      <div>
+        {nearby ? (
+          <>
+            <b className="lv-near-title">{t("{peer} is nearby.", { peer })}</b>
+            {distance !== null && fresh && (
+              <span className="lv-metres">
+                {accurate ? "" : "~"}
+                {distance} m
+              </span>
+            )}
+          </>
+        ) : (
+          <>
+            <b>{headline}</b>
+            {signal === "ok" && <span className="lv-sub">{eta(distance, t)}</span>}
+            {signal === "approx" && (
+              <span className="lv-sub">
+                <Signal size={14} /> {t("Approximate location")} · {eta(distance, t)}
+              </span>
+            )}
+            {["weak", "theirs", "mine", "stopped", "mineweak"].includes(signal) && (
+              <span className="lv-sub">{t("Meet at {place}", { place: [g.area, g.exit].filter(Boolean).join(" · ") })}</span>
+            )}
+            {signal === "mine" && !sharing && (
+              <button className="lv-inline" onClick={() => a.setModal("permission")}>
+                {t("Share my location")}
+              </button>
+            )}
+            {approaching && signal === "ok" && (
+              <span className="lv-moving">
+                <Navigation size={13} /> {t("Moving toward you")}
+              </span>
+            )}
+          </>
+        )}
       </div>
+    </div>
+  );
 
-      {findBtn(nearby ? "primary" : "soft")}
-
-      {isGuest && sharing && !isNative && (
-        <p className="lv-keep">
-          <Smartphone size={15} /> {t("Keep this page open so {peer} can follow you to the exit.", { peer })}
-        </p>
+  const atPointBtn = (
+    <button
+      className={"lv-point " + (atPoint ? "on" : "")}
+      aria-pressed={!!atPoint}
+      disabled={busy}
+      onClick={() => a.run(() => a.action("meeting-point", { atPoint: !atPoint }))}
+    >
+      {atPoint ? <Check size={16} strokeWidth={2.6} /> : <MapPin size={16} />}
+      {atPoint ? t("You’re at {place}", { place }) : t("I’m at {place}", { place })}
+    </button>
+  );
+  const foot = (
+    <div className="lv-foot">
+      {atPointBtn}
+      {sharing ? (
+        <button className="lv-stop" disabled={busy} onClick={a.stopSharing}>
+          <i /> {t("Stop sharing")}
+        </button>
+      ) : (
+        <button className="lv-stop off" onClick={() => a.setModal("permission")}>
+          <LocateOff size={15} /> {t("Share location")}
+        </button>
       )}
+    </div>
+  );
+  const keepOpen = isGuest && sharing && !isNative && (
+    <p className="lv-keep">
+      <Smartphone size={15} /> {t("Keep this page open so {peer} can follow you to the exit.", { peer })}
+    </p>
+  );
 
-      {nearby && (
-        <div className="lv-nearby">
-          {isGuest ? (
-            <div className="lv-beacon">
-              {t("Look for")} <b>{beacon}</b> <span>●●●</span>
-            </div>
-          ) : lookFor.length || peerPhoto ? (
-            <div className="lv-lookfor-row">
-              {peerPhoto && <img src={peerPhoto} alt="" />}
-              <ul className="lv-lookfor">
-                <li className="lbl">Look for</li>
-                {lookFor.map((x) => (
-                  <li key={x}>{x}</li>
-                ))}
-              </ul>
-            </div>
+  /* Nearby: the map shrinks; recognition and direction take over. */
+  if (nearby)
+    return (
+      <section className="lv lv-near">
+        {card}
+        {recognise}
+        {isGuest ? flashBtn("lime") : boardBtn("primary")}
+        {seeBtn("soft")}
+        {flashNote}
+        <div className="lv-map small">
+          {me || them ? (
+            <Suspense fallback={<div className="lv-map-empty">{t("Loading map…")}</div>}>
+              <LiveMap id={g.id} positions={positions} role={role} peer={peerName} peerPhoto={peerPhoto} />
+            </Suspense>
           ) : null}
-          {isGuest ? (
-            <button className="btn lime" disabled={busy} onClick={flash}>
-              <Zap size={20} /> {t("Flash my greeter")}
-            </button>
-          ) : (
-            <button className="btn primary" onClick={() => a.setModal("board")}>
-              <Maximize2 size={19} /> SHOW GREETBOARD
-            </button>
-          )}
-          {isGuest && flashing && (
-            <p className="lv-flashing" role="status">
-              {t("Your greeter is flashing. Look for {beacon}", { beacon })} ●●●
-            </p>
-          )}
         </div>
-      )}
+        {tools(true)}
+        {foot}
+        {sos}
+      </section>
+    );
 
-      <div className={"lv-map " + (nearby ? "small" : "")}>
+  /* Far: the map does the work. Everything else stays small. */
+  return (
+    <section className="lv">
+      {card}
+      {keepOpen}
+      <div className="lv-map">
         {me || them ? (
           <Suspense fallback={<div className="lv-map-empty">{t("Loading map…")}</div>}>
             <LiveMap id={g.id} positions={positions} role={role} peer={peerName} peerPhoto={peerPhoto} />
@@ -303,47 +346,13 @@ export default function Live() {
           <div className="lv-map-empty">
             {sharing ? <Navigation size={26} /> : <LocateOff size={26} />}
             <b>{sharing ? t("Finding your location…") : t("Location is off")}</b>
-            <span>
-              {t("Meet at {place}", { place: [g.area, g.exit, g.landmark].filter(Boolean).join(" · ") })}
-            </span>
+            <span>{t("Meet at {place}", { place: [g.area, g.exit, g.landmark].filter(Boolean).join(" · ") })}</span>
           </div>
         )}
       </div>
-
-      {actions}
-
-      {!nearby && (
-        <button className="btn ink" onClick={see}>
-          <Check size={19} strokeWidth={2.6} /> {t("I see {peer}", { peer })}
-        </button>
-      )}
-      {nearby && (
-        <button className="btn ghost" onClick={see}>
-          <Check size={18} strokeWidth={2.6} /> {t("I see {peer}", { peer })}
-        </button>
-      )}
-
-      {/* Indoors this beats GPS: both people say where they are. */}
-      <button
-        className={"btn " + (atPoint ? "lime" : "soft") + " lv-atpoint"}
-        aria-pressed={!!atPoint}
-        disabled={busy}
-        onClick={() => a.run(() => a.action("meeting-point", { atPoint: !atPoint }))}
-      >
-        {atPoint ? <Check size={19} strokeWidth={2.6} /> : <MapPin size={19} />}
-        {atPoint ? t("You’re at {place}", { place: g.exit || g.area }) : t("I’m at {place}", { place: g.exit || g.area })}
-      </button>
-      <div className="lv-foot">
-        {sharing ? (
-          <button className="lv-stop" disabled={busy} onClick={a.stopSharing}>
-            <i /> {t("Stop sharing")}
-          </button>
-        ) : (
-          <button className="lv-stop off" onClick={() => a.setModal("permission")}>
-            <LocateOff size={15} /> {t("Share location")}
-          </button>
-        )}
-      </div>
+      {tools(true)}
+      {seeBtn("soft")}
+      {foot}
       {sos}
     </section>
   );

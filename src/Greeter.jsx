@@ -652,8 +652,11 @@ function Detail() {
         </section>
       )}
 
-      {!ended && !["CREATED", "MEETING_CONFIRMATION"].includes(g.state) && <PresenceBar g={g} />}
+      {!ended && !["CREATED", "LIVE_GREET", "NEARBY", "VERY_CLOSE", "MEETING_CONFIRMATION"].includes(g.state) && <PresenceBar g={g} />}
 
+      {/* As they close in, the rest of the Greet steps aside. */}
+      {!["NEARBY", "VERY_CLOSE", "MEETING_CONFIRMATION"].includes(g.state) && (
+      <>
       <section className="dt-group">
         <div className="dt-row">
           <Plane size={20} />
@@ -740,6 +743,8 @@ function Detail() {
           <button className="pf-row danger" onClick={() => a.setModal("cancel")}><XCircle size={20} /><span>Cancel Greet</span></button>
         )}
       </section>
+      </>
+      )}
     </div>
   );
 }

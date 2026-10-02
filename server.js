@@ -776,6 +776,8 @@ app.post("/api/greets/:id/action", (req, res) => {
       value.accuracy < 0
     )
       return res.sendStatus(400);
+    // Someone who has said "we've met" no longer shares, even if a late update arrives.
+    if (g.state === "MEETING_CONFIRMATION" && g.confirmations.includes(role)) return res.json(view(g));
     g.locations[role] = { ...value, timestamp: Date.now() };
     if (g.stopped) delete g.stopped[role];
     if (
@@ -855,6 +857,9 @@ app.post("/api/greets/:id/action", (req, res) => {
         error: "Your guest must be ready before confirming a meeting.",
       });
     g.confirmations = [...new Set([...g.confirmations, role])];
+    // Whoever confirms stops sharing at once; the other side sees it stopped.
+    delete g.locations[role];
+    g.stopped = { ...(g.stopped || {}), [role]: Date.now() };
     if (g.confirmations.length === 1) g.confirmAt = Date.now();
     g.state =
       g.confirmations.length === 2 ? "COMPLETED" : "MEETING_CONFIRMATION";
