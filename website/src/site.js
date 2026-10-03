@@ -279,3 +279,14 @@
     document.body.appendChild(a); a.click(); a.remove();
   });
 })();
+
+/* Product film: our own play button, then the video's normal controls */
+(() => {
+  const v = document.getElementById("film");
+  if (!v) return;
+  const frame = v.closest(".x-film-frame");
+  const btn = frame.querySelector(".x-film-play");
+  v.controls = false; // clean poster until it plays; without JS the normal controls stay
+  btn.addEventListener("click", () => v.play().catch(() => {}));
+  v.addEventListener("play", () => { frame.classList.add("playing"); v.controls = true; });
+})();

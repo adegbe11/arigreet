@@ -242,9 +242,22 @@
 
 /* Rounded frame: every coloured block sits on white as a rounded card */
 :root { --frame: clamp(8px, 1vw, 14px); --round: clamp(22px, 2.4vw, 36px); }
-.x-hero, .page-hero, .gen-sec, .x-bleed, .x-story, .faq, .sendoff, .links-sec {
+.x-hero, .page-hero, .gen-sec, .x-bleed, .x-story, .x-film, .faq, .sendoff, .links-sec {
   margin-inline: var(--frame); margin-bottom: var(--frame);
   border-radius: var(--round); overflow: clip;
 }
 .x-hero, .page-hero { margin-top: calc(-92px + var(--frame)); }
 .sendoff { margin-bottom: var(--frame); }
+
+/* Watch: the product film */
+.x-film { padding-block: clamp(64px, 9vw, 120px); text-align: center; background: var(--paper); }
+.x-film-title { font-size: clamp(38px, 5.4vw, 68px); line-height: 1; }
+.x-film-sub { max-width: 34em; margin: 18px auto 0; font-size: clamp(17px, 1.6vw, 20px); color: var(--ink-2); }
+.x-film-frame { position: relative; margin: clamp(32px, 4vw, 48px) auto 0; max-width: 1080px; border-radius: clamp(18px, 2vw, 28px); overflow: hidden; background: #0b1230; box-shadow: 0 30px 80px -40px rgba(11, 18, 48, 0.45); }
+.x-film-frame video { display: block; width: 100%; height: auto; aspect-ratio: 16 / 9; background: #0b1230; }
+.x-film-play { position: absolute; inset: 0; margin: auto; width: 88px; height: 88px; border: 0; border-radius: 50%; display: grid; place-items: center; color: var(--ikb); background: var(--lime, #ccff00); box-shadow: 0 12px 34px -8px rgba(0, 0, 0, 0.45); cursor: pointer; transition: transform 0.2s ease; }
+.x-film-play svg { margin-left: 4px; }
+.x-film-play:hover { transform: scale(1.06); }
+.x-film-play:focus-visible { outline: 3px solid var(--white); outline-offset: 4px; }
+.x-film-frame.playing .x-film-play { display: none; }
+@media (max-width: 640px) { .x-film-play { width: 68px; height: 68px; } }

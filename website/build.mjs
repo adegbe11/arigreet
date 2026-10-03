@@ -330,6 +330,7 @@ const SITE_CSS = minCss(["fonts.css", "base.css", "extra.css", "home.css"].map((
 writeFileSync(path.join(out, "site/site.css"), SITE_CSS);
 writeFileSync(path.join(out, "site/site.js"), readFileSync(path.join(here, "src/site.js"), "utf8"));
 cpSync(IMG_DIR, path.join(out, "site/img"), { recursive: true });
+cpSync(path.join(here, "src/video"), path.join(out, "site/video"), { recursive: true });
 cpSync(path.join(here, "src/fonts"), path.join(out, "site/fonts"), { recursive: true });
 
 // Home
